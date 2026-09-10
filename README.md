@@ -19,6 +19,12 @@ internet. Everything runs and saves in that one browser.
   always there — rate the screen, jot a note, hit send. Everything collected shows
   on *Home* with a *Copy all (JSON)* button.
 
+## The sidebar
+
+Starts **collapsed** to icons only — hover any icon for its label. The
+**Expand / Collapse** control sits at the bottom of the sidebar; your choice is
+remembered.
+
 ## Guided tours
 
 Every end-to-end use case has a **step-by-step walk-through** on the live screens.
