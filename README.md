@@ -38,8 +38,8 @@ through it, and it navigates you between screens automatically.
 | **Home** | Day-at-a-glance: click a stat tile to jump to its screen, confirm auto-merge matches inline, open a customer from an alert, read the activity feed, review collected feedback. Plus a **Beyond CRM + CVM** panel. |
 | **How it works** | The management demo. Opens with **The end goal** (the vision + three pillars: Retain / Grow / Trust the data) and **The impact** (a business-case table — where teams are today vs. the target, and what drives it, with a back-of-envelope at DCT's scale). Then **how every capability ladders up to the goal** — each advanced capability, the CRM/CVM comparison, what it unlocks, the outcome it drives, and which goal it serves. Then the end-to-end pipeline you can click through, three journey swimlanes, and the four guided tours. |
 | **Rules & scoring** | The business owns the logic; engineering builds against the spec. **Plug fields in and out of each score** — add from a library grouped by source system (each with a data-coverage bar), or tap the **app's recommendations** (known signals it suggests for that score, with a suggested weight); remove any field with one click. Tune weights with steppers. The app **warns when a field's coverage is too low** to trust. Every change recalculates every score on every screen instantly, and each card shows a sample customer's factor-by-factor breakdown. **Export full build spec (JSON)** hands engineering the formulas, active fields, weights, input definitions and coverage. Thresholds (at-risk churn, auto-merge confidence, score bands) live here too. |
-| **Identity resolution** | Work the match queue: nudge a confidence score, then Confirm (merges that source into the customer), Review or Reject. Filter by state. "Confirm all auto-merge". Toggle the intercompany cross-sell exclusion on the tax-ID-anchored B2B account. |
-| **Customer 360** | Search the directory, open any of 14 customers. See the merged profile by source, computed scores, usage trend (30d/90d/12m). Open or resolve support tickets, add internal notes — all saved, all shown on the timeline. |
+| **Identity resolution** | Work the match queue: nudge a confidence score, then Confirm (merges that source into the customer), Review or Reject. Filter by state. Click any **match ID** for the full case in the right-hand panel. "Confirm all auto-merge". Toggle the intercompany cross-sell exclusion on the tax-ID-anchored B2B account. |
+| **Customer 360** | Search the directory, open any of 14 customers. See the merged profile by source (click a source block to inspect it), computed scores, usage trend (30d/90d/12m). Open or resolve support tickets, add internal notes — all saved, all shown on the timeline. |
 | **Operator console** | Filter by source, search, read the 3 KPIs. Open a customer → identity + profile halves → **Send offer** (pick a type) or **Add to audience**. **Build a list**: filter, tick customers, **Save as audience**. |
 | **List sync** | Capability comparison vs CRM / CVM. Pick a saved audience → edit its field mapping → choose one-time vs live sync → **Run export** (appends to that audience's export history). |
 
@@ -55,6 +55,17 @@ Light/dark follows the OS; the ☀/☾ button overrides it. Cellcard brand palet
 (Primary `#FF9F18` / deep `#F56300`, Pearl White `#FBF8F4`, Ultramarine
 `#0D90CE`, Pink `#DF1683`). No data is sent anywhere — all sample data, all
 saved locally. All figures are in USD.
+
+## The mascot & the info drawer
+
+- **The little face bottom-right** (above *Feedback*) is the shortcut to the
+  advanced story. Click it for the four things this platform does that a CRM or
+  CVM can't; pick one and it starts that guided tour on the live screens.
+- **A slide-in panel from the right** opens whenever you click into a detail:
+  a **match ID** in *Identity resolution* (the full case for that match, with
+  Confirm / Review / Reject in the panel), a **source block** in *Customer 360*
+  (what that system is, its operating company, and which scores it feeds), or the
+  **Details** button on a capability in *How it works*. Esc or click-away closes it.
 
 ## First run & tooltips
 

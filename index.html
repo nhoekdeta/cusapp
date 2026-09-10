@@ -213,6 +213,9 @@
   /* source blocks */
   .sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;}
   .srcblock{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);padding:13px;}
+  .srcblock-btn{font:inherit;text-align:left;width:100%;cursor:pointer;display:block;transition:border-color .13s,background .13s;}
+  .srcblock-btn:hover{border-color:var(--accent);background:var(--surface-3);}
+  .srcblock-btn .pi-go{font-size:10.5px;font-weight:600;color:var(--accent-text);display:inline-flex;align-items:center;gap:4px;}
   .srcblock h3{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:500;color:var(--accent-text);margin-bottom:9px;}
   .kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12.5px;}
   .kv .k{color:var(--ink-2);} .kv .v{text-align:right;color:var(--ink);font-weight:500;}
@@ -291,6 +294,65 @@
     background:var(--ink);color:var(--surface);border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:12px;font-weight:500;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.3);}
   .fab:hover{filter:brightness(1.12);}
   .fab svg{width:15px;height:15px;stroke:currentColor;fill:none;}
+
+  /* mascot — spotlights the advanced features */
+  .pet{position:fixed;right:20px;bottom:72px;z-index:56;width:52px;height:52px;padding:0;border:0;border-radius:999px;cursor:pointer;
+    background:var(--grad);box-shadow:0 10px 26px rgba(245,99,0,.42);display:grid;place-items:center;transition:transform .16s ease;}
+  .pet:hover{filter:brightness(1.08) saturate(1.1);box-shadow:0 12px 30px rgba(245,99,0,.55);}
+  .pet svg{width:34px;height:34px;display:block;}
+  @media (prefers-reduced-motion:no-preference){ .pet{animation:petbob 3.2s ease-in-out infinite;} }
+  @keyframes petbob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+  .petbubble{position:fixed;right:20px;bottom:136px;z-index:57;width:320px;max-width:calc(100vw - 32px);
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:14px;box-shadow:0 22px 60px rgba(0,0,0,.32);overflow:hidden;
+    animation:petbubble-in .2s ease both;}
+  @keyframes petbubble-in{from{opacity:0;transform:translateY(8px) scale(.97);}to{opacity:1;transform:none;}}
+  .petbubble .pb-h{padding:13px 15px;background:var(--surface-2);border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;}
+  .petbubble .pb-h .pb-t{font-weight:600;font-size:12.5px;}
+  .petbubble .pb-h .pb-s{font-size:10.5px;color:var(--ink-2);margin-top:1px;}
+  .petbubble .pb-list{max-height:min(60vh,420px);overflow:auto;}
+  .petitem{width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--border);font:inherit;cursor:pointer;
+    padding:12px 15px;display:block;transition:background .12s;}
+  .petitem:last-child{border-bottom:0;}
+  .petitem:hover{background:var(--accent-soft);}
+  .petitem .pi-t{font-weight:600;font-size:12px;color:var(--ink);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .petitem .pi-d{display:block;font-size:11px;color:var(--ink-2);margin-top:4px;line-height:1.45;}
+  .petitem .pi-go{display:block;font-size:10.5px;font-weight:600;color:var(--accent-text);margin-top:7px;}
+
+  /* right-side info drawer */
+  .drawer-scrim{position:fixed;inset:0;background:rgba(15,12,8,.44);z-index:64;opacity:0;transition:opacity .2s ease;}
+  .drawer-scrim.on{opacity:1;}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:428px;max-width:92vw;z-index:65;background:var(--surface);
+    border-left:1px solid var(--border);box-shadow:-18px 0 54px rgba(0,0,0,.24);display:flex;flex-direction:column;
+    transform:translateX(100%);transition:transform .24s cubic-bezier(.3,.7,.3,1);}
+  .drawer.on{transform:none;}
+  .drawer-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .drawer-head .eyebrow{margin-bottom:5px;}
+  .drawer-head h2{font-size:15px;font-weight:600;line-height:1.3;}
+  .drawer-head p{margin:4px 0 0;font-size:12px;color:var(--ink-2);line-height:1.5;}
+  .drawer-x{background:none;border:0;font-size:20px;line-height:1;color:var(--ink-3);cursor:pointer;padding:2px 4px;flex:none;}
+  .drawer-x:hover{color:var(--ink);}
+  .drawer-body{padding:18px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:16px;font-size:12.5px;}
+  .drawer-body h4{font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;font-size:10px;font-weight:500;color:var(--ink-2);margin:0 0 8px;}
+  .drawer-sec{border:1px solid var(--border);border-radius:9px;padding:13px;background:var(--surface-2);}
+  .drawer-foot{padding:13px 18px;border-top:1px solid var(--border);background:var(--surface-2);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+  .drawer-kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px dashed var(--border);}
+  .drawer-kv:last-child{border-bottom:0;}
+  .drawer-kv .k{color:var(--ink-2);} .drawer-kv .v{text-align:right;color:var(--ink);font-weight:500;}
+  .drawer-clue{cursor:pointer;}
+
+  /* score cards — equal-height, aligned bar + CTA */
+  .scoreact .sa-eye{min-height:2.2em;line-height:1.35;}
+  .scoreact .sa-band{min-height:20px;}
+  .scoreact .sa-cta{margin-top:auto;padding-top:2px;min-height:2.4em;align-items:flex-start;}
+
+  /* pulsing status dots on the goal pillars */
+  @media (prefers-reduced-motion:no-preference){
+    .pillar .pill .dot{animation:dotpulse 2.2s ease-out infinite;}
+  }
+  @keyframes dotpulse{0%{box-shadow:0 0 0 0 var(--pulse,rgba(0,0,0,.3));}70%{box-shadow:0 0 0 7px rgba(0,0,0,0);}100%{box-shadow:0 0 0 0 rgba(0,0,0,0);}}
+  .pillar .pill.accent .dot{--pulse:rgba(255,138,42,.55);}
+  .pillar .pill.pop .dot{--pulse:rgba(223,22,131,.5);}
+  .pillar .pill.info .dot{--pulse:rgba(13,144,206,.5);}
 
   .spark svg{display:block;width:100%;height:60px;}
   [hidden]{display:none!important;}
@@ -434,9 +496,22 @@
   <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
   Feedback
 </button>
+<button class="pet" id="pet" type="button" aria-label="Show what makes this platform different" title="Psst — click me. I'll show you what this platform does that CRM and CVM can't.">
+  <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <path d="M8 9 L15 15 Q20 13 25 15 L32 9 Q34 20 30 27 Q25 34 20 34 Q15 34 10 27 Q6 20 8 9 Z" fill="#fff8ef"/>
+    <path d="M8 9 L15 15 Q10 16 9 22 Q6 15 8 9 Z" fill="#ffd9a8"/>
+    <path d="M32 9 L25 15 Q30 16 31 22 Q34 15 32 9 Z" fill="#ffd9a8"/>
+    <circle class="petpulse" cx="15.5" cy="21" r="2.1" fill="#1c0e00"/>
+    <circle class="petpulse" cx="24.5" cy="21" r="2.1" fill="#1c0e00"/>
+    <path d="M20 24 Q18.5 26 20 27 Q21.5 26 20 24 Z" fill="#df1683"/>
+    <path d="M20 27 Q20 29.5 17.5 30 M20 27 Q20 29.5 22.5 30" stroke="#b34a00" stroke-width="1" stroke-linecap="round"/>
+  </svg>
+</button>
 
 <div id="tourHost"></div>
 <div id="modalHost"></div>
+<div id="drawerHost"></div>
+<div id="petHost"></div>
 <div id="toast" class="toast" role="status" hidden></div>
 
 <script>
@@ -777,6 +852,176 @@ function modal(opts){
   return {close:close,root:ov};
 }
 
+/* ======================================================= right-side info drawer */
+function drawer(opts){
+  var host=$("#drawerHost"); host.innerHTML="";
+  var scrim=elh('<div class="drawer-scrim"></div>');
+  var dr=elh('<aside class="drawer" role="dialog" aria-modal="true" aria-label="'+esc(opts.title||"Details")+'">'+
+    '<div class="drawer-head"><div>'+
+      (opts.eyebrow?'<div class="eyebrow">'+esc(opts.eyebrow)+'</div>':'')+
+      '<h2>'+esc(opts.title||"")+'</h2>'+
+      (opts.sub?'<p>'+opts.sub+'</p>':'')+
+    '</div><button class="drawer-x" type="button" aria-label="Close">&times;</button></div>'+
+    '<div class="drawer-body">'+(opts.body||'')+'</div>'+
+    (opts.foot?'<div class="drawer-foot">'+opts.foot+'</div>':'')+
+  '</aside>');
+  host.appendChild(scrim); host.appendChild(dr);
+  function close(){
+    dr.classList.remove("on"); scrim.classList.remove("on");
+    setTimeout(function(){ if(host.contains(scrim)) host.innerHTML=""; },240);
+    document.removeEventListener("keydown",onKey);
+  }
+  function onKey(e){ if(e.key==="Escape") close(); }
+  scrim.addEventListener("click",close);
+  dr.querySelector(".drawer-x").addEventListener("click",close);
+  document.addEventListener("keydown",onKey);
+  requestAnimationFrame(function(){ dr.classList.add("on"); scrim.classList.add("on"); });
+  if(opts.onOpen) opts.onOpen(dr, close);
+  return {close:close,root:dr};
+}
+
+/* --- drawer content: identity match inspector --- */
+function matchDrawer(mid){
+  var m=STORE.get().matches.find(function(x){return x.id===mid;}); if(!m) return;
+  var c=STORE.cust(m.customerId);
+  var sys=SRC_SYS[m.sys]||{sys:m.sys,what:""};
+  var pct=Math.round(m.score*100);
+  var verdict=m.score>=AUTO?"clears the auto-merge bar — safe to release without review"
+    : m.score>=0.75?"strong, but below the auto-merge bar — a quick human check is worth it"
+    : "weak — treat as a maybe and look for a second signal before merging";
+  var stateLbl={pending:"Waiting for a decision",confirmed:"Merged into the profile",rejected:"Rejected — kept separate"}[m.state];
+  var body=''+
+    '<div class="drawer-sec"><h4>What we are matching</h4>'+
+      '<div class="drawer-kv"><span class="k">Customer on file</span><span class="v">'+esc(c.name)+' &middot; '+esc(c.id)+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">Candidate record</span><span class="v">'+esc(m.label)+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">Source system</span><span class="v">'+esc(sys.sys)+' &middot; '+esc(srcOpco(c,m.sys))+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">Holds</span><span class="v">'+esc(sys.what)+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">Status</span><span class="v">'+esc(stateLbl)+'</span></div>'+
+    '</div>'+
+    '<div class="drawer-sec"><h4>Why they matched</h4>'+
+      '<div class="chips" style="margin-bottom:9px">'+m.signals.map(function(x){return '<span class="pill '+(x==="name"?"mut":"info")+'">'+esc(x)+' match</span>';}).join("")+'</div>'+
+      '<p class="mini" style="margin:0">Deterministic keys (phone, email, tax ID) score highest; a name-only overlap on its own stays low on purpose.</p>'+
+    '</div>'+
+    '<div class="drawer-sec"><h4>Confidence '+m.score.toFixed(2)+'</h4>'+
+      '<div class="track" style="margin:2px 0 8px"><i style="width:'+pct+'%;background:'+(m.score>=AUTO?"var(--good-dot)":m.score<0.75?"var(--warn-dot)":"var(--accent)")+'"></i></div>'+
+      '<p class="mini" style="margin:0">Auto-merge bar is '+AUTO.toFixed(2)+'. This score '+verdict+'.</p>'+
+    '</div>'+
+    '<div class="drawer-sec"><h4>What each decision does</h4>'+
+      '<div class="drawer-kv"><span class="k">Confirm merge</span><span class="v">folds '+esc(m.sys)+' into '+esc(c.name)+'’s profile</span></div>'+
+      '<div class="drawer-kv"><span class="k">Review</span><span class="v">flags it for a second pair of eyes</span></div>'+
+      '<div class="drawer-kv"><span class="k">Reject</span><span class="v">keeps the records separate</span></div>'+
+    '</div>';
+  var foot=m.state==="pending"
+    ? '<button class="btn" data-d="review" type="button">Review</button><button class="btn" data-d="rejected" type="button">Reject</button><button class="btn primary" data-d="confirmed" type="button">Confirm merge</button>'
+    : '<button class="btn" data-d="pending" type="button">Move back to pending</button>';
+  drawer({ eyebrow:"Match "+m.id, title:esc(c.name)+" ← "+esc(m.sys)+" record", sub:"Identity resolution &middot; candidate review", body:body, foot:foot,
+    onOpen:function(root,close){
+      root.querySelectorAll("[data-d]").forEach(function(b){ b.addEventListener("click",function(){
+        var d=b.dataset.d;
+        if(d==="confirmed") confirmMatch(m.id); else setMatch(m.id,d);
+        close();
+      }); });
+    }});
+}
+
+/* --- drawer content: source-system inspector --- */
+var SRC_FEEDS={
+  CRM:"segment, tenure and marketing consent — the backbone of every profile and the consent gate on List sync",
+  Billing:"plan, ARPU and payment behaviour — drives upsell propensity and the bill-shock churn signal",
+  Network:"data sessions, home cell and radio — powers the usage trend and the over-plan upsell signal",
+  Support:"open tickets and contact history — a heavy input to the churn score",
+  Digital:"app logins and in-app activity — the core of the engagement score"
+};
+function sourceDrawer(cid, sy){
+  var c=STORE.cust(cid); if(!c) return;
+  var s=SRC_SYS[sy]; var present=c.sources.indexOf(sy)>=0;
+  var kv={
+    CRM:[["Segment",c.segment],["Customer since",c.tenure+" ago"],["Consent",c.consent==="granted"?"Marketing: granted":c.consent==="withdrawn"?"Marketing: withdrawn":"B2B agreement"],["Home area",c.cell]],
+    Billing:[["Plan",c.plan],["ARPU",c.arpu+" / mo"],["Payment","ABA autopay"]],
+    Network:[["Home cell",c.cell],["Radio","4G / 5G"]],
+    Support:[["Open tickets",String(c.tickets.filter(function(t){return t.status==="Open";}).length)],["Tickets (12 mo)",String(c.tickets.length)]],
+    Digital:[["Client","MyCellcard v6.2"],["Push",c.consent==="withdrawn"?"Disabled":"Enabled"]]
+  }[sy]||[];
+  var body=''+
+    '<div class="drawer-sec"><h4>System</h4>'+
+      '<div class="drawer-kv"><span class="k">Platform</span><span class="v">'+esc(s.sys)+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">Operating company</span><span class="v">'+esc(srcOpco(c,sy))+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">System of record for</span><span class="v">'+esc(s.what)+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">This customer</span><span class="v">'+(present?"present — merged in":"not present")+'</span></div>'+
+    '</div>'+
+    (kv.length?'<div class="drawer-sec"><h4>What it contributes here</h4>'+kv.map(function(r){return '<div class="drawer-kv"><span class="k">'+esc(r[0])+'</span><span class="v">'+esc(r[1])+'</span></div>';}).join("")+'</div>':'')+
+    '<div class="drawer-sec"><h4>Feeds into</h4><p style="margin:0;line-height:1.6">'+esc(SRC_FEEDS[sy]||"")+'</p></div>'+
+    '<div class="drawer-sec"><h4>Recent activity from this source</h4>'+
+      (function(){ var rows=c.timeline.filter(function(t){return t.src===sy;}).slice(0,4);
+        return rows.length? rows.map(function(t){return '<div class="drawer-kv"><span class="k">'+esc(rel(t.at))+'</span><span class="v" style="max-width:60%">'+esc(t.ev)+'</span></div>';}).join("")
+          : '<p class="mini" style="margin:0">Nothing logged from this system yet.</p>'; })()+
+    '</div>';
+  drawer({ eyebrow:"Source · "+sy, title:esc(s.sys), sub:esc(srcOpco(c,sy))+' &middot; feeding '+esc(c.name)+"’s profile", body:body,
+    foot:'<button class="btn" data-go="identity" type="button">Open match queue &rarr;</button>',
+    onOpen:function(root,close){ var b=root.querySelector("[data-go]"); if(b) b.addEventListener("click",function(){ close(); go("identity"); }); }});
+}
+
+/* --- drawer content: advanced-capability inspector --- */
+function capabilityDrawer(x){
+  var g=GOAL[x.goal];
+  var body=''+
+    '<div class="drawer-sec"><h4>Where CRM &amp; CVM stop</h4>'+
+      '<div class="drawer-kv"><span class="k">CRM</span><span class="v">'+esc(x.crm)+'</span></div>'+
+      '<div class="drawer-kv"><span class="k">CVM</span><span class="v">'+esc(x.cvm)+'</span></div>'+
+    '</div>'+
+    '<div class="drawer-sec"><h4>What this unlocks</h4><p style="margin:0;line-height:1.6">'+x.unlocks+'</p></div>'+
+    '<div class="drawer-sec"><h4>The outcome it drives</h4><p style="margin:0;line-height:1.6">'+x.outcome+'</p></div>'+
+    '<div class="drawer-sec"><h4>Goal it serves</h4><div>'+pill(g.cls,g.t)+'</div></div>';
+  var tid=CAP_TOUR[x.t];
+  drawer({ eyebrow:"Only here", title:esc(x.t), sub:"A capability CRM and CVM tools don’t have on their own", body:body,
+    foot:'<button class="btn" data-go type="button">See the screen &rarr;</button>'+(tid?'<button class="btn primary" data-tour type="button">&#9654; Walk me through it</button>':''),
+    onOpen:function(root,close){
+      root.querySelector("[data-go]").addEventListener("click",function(){ close(); go(x.v); });
+      var t=root.querySelector("[data-tour]"); if(t) t.addEventListener("click",function(){ close(); startTour(tid); });
+    }});
+}
+
+/* ======================================================= mascot / advanced-feature spotlight */
+var CAP_TOUR={
+  "Cross-source identity merge":"identity",
+  "Predictive scores on every profile":"activate",
+  "Tax-ID-anchored B2B accounts":"b2b",
+  "Live, re-queryable segments":"campaign",
+  "One activation view":"activate"
+};
+var PET_FEATURES=[
+  {t:"Cross-source identity merge", d:"One customer stitched from 3–5 scattered records — the step a CRM keeps as-is and a CVM assumes is already done.", tour:"identity"},
+  {t:"Predictive scores on every profile", d:"Churn, upsell and engagement recomputed nightly for every customer — not a model in a lab, a number on the record.", tour:"activate"},
+  {t:"Tax-ID-anchored B2B accounts", d:"An enterprise seen whole across every product and billing platform, with intercompany cross-sell held out.", tour:"b2b"},
+  {t:"Live, re-queryable segments", d:"Audiences that re-evaluate themselves on every merge, score change and opt-out, then push adds and removals automatically.", tour:"campaign"}
+];
+var PET_OPEN=false;
+function petPop(){
+  var host=$("#petHost");
+  if(PET_OPEN){ host.innerHTML=""; PET_OPEN=false; return; }
+  PET_OPEN=true;
+  var b=elh('<div class="petbubble" role="dialog" aria-label="What makes this platform different">'+
+    '<div class="pb-h"><div><div class="pb-t">What we do that CRM + CVM can’t</div><div class="pb-s">Pick one — I’ll walk you through it live</div></div></div>'+
+    '<div class="pb-list"></div></div>');
+  var list=b.querySelector(".pb-list");
+  PET_FEATURES.forEach(function(f){
+    var it=elh('<button class="petitem" type="button">'+
+      '<span class="pi-t"><span class="adv-tag">Only here</span>'+esc(f.t)+'</span>'+
+      '<span class="pi-d">'+esc(f.d)+'</span>'+
+      '<span class="pi-go">Walk me through it &rarr;</span></button>');
+    it.addEventListener("click",function(){ host.innerHTML=""; PET_OPEN=false; startTour(f.tour); });
+    list.appendChild(it);
+  });
+  host.appendChild(b);
+  setTimeout(function(){
+    document.addEventListener("click",function petAway(e){
+      if(!PET_OPEN) { document.removeEventListener("click",petAway); return; }
+      if(host.contains(e.target) || e.target.closest("#pet")) return;
+      host.innerHTML=""; PET_OPEN=false; document.removeEventListener("click",petAway);
+    });
+  },0);
+}
+
 /* ======================================================= sparkline */
 function sparkSVG(data,h){
   h=h||60; var w=280,pad=4;
@@ -922,16 +1167,16 @@ var SCORE_ACTION={
   "Upsell propensity":{ fill:function(){return "var(--pop)";}, pillCls:function(){return "pop";},
      cta:function(v){return v>=BANDS().med?"Pitch the next plan tier or an add-on":"Not ready — nurture first";}, kind:"upsell" },
   "Engagement":       { fill:function(){return "var(--info-dot)";}, pillCls:function(){return "info";},
-     cta:function(v){return v>=BANDS().high?"Highly engaged — add to a loyalty / referral audience":"Re-engage — add to a nurture audience";}, kind:"nurture" }
+     cta:function(v){return v>=BANDS().high?"Highly engaged — add to a referral audience":"Re-engage — add to a nurture audience";}, kind:"nurture" }
 };
 function scoreActNode(label, val, cust){
   var A=SCORE_ACTION[label];
   var n=elh('<button class="scoreact" type="button">'+
-    '<div class="eyebrow">'+label+'</div>'+
-    '<div class="k num">'+val+'<span style="font-size:13px;color:var(--ink-3)"> / 100</span></div>'+
-    '<div class="track"><i style="width:'+val+'%;background:'+A.fill(val)+'"></i></div>'+
-    '<div>'+pill(A.pillCls(val), band(val))+'</div>'+
-    '<div class="cta">'+esc(A.cta(val))+' &rarr;</div></button>');
+    '<div class="eyebrow sa-eye">'+label+'</div>'+
+    '<div class="k num sa-k">'+val+'<span style="font-size:13px;color:var(--ink-3)"> / 100</span></div>'+
+    '<div class="track sa-bar"><i style="width:'+val+'%;background:'+A.fill(val)+'"></i></div>'+
+    '<div class="sa-band">'+pill(A.pillCls(val), band(val))+'</div>'+
+    '<div class="cta sa-cta">'+esc(A.cta(val))+' &rarr;</div></button>');
   n.addEventListener("click",function(){ actNext(cust.id, A.kind); });
   return n;
 }
@@ -1102,12 +1347,12 @@ VIEWS.identity=function(){
   wrap.appendChild(k);
 
   var card=elh('<div class="card" id="idQueueCard"><div class="card-head"><div><h2>Match review queue <span class="adv-tag">Deterministic + probabilistic</span></h2><p>Adjust the confidence score with − / + before deciding</p></div>'+
-    '<div class="btn-row" id="idFilters"></div></div>'+
+    '<div class="seg" id="idFilters"></div></div>'+
     '<div class="twrap"><table class="tbl"><thead><tr><th>Match</th><th>Customer &amp; candidate record</th><th>Signals</th><th>Confidence</th><th>Decision</th></tr></thead><tbody></tbody></table></div>'+
     '<div class="foot-row"><span class="note" id="idCount"></span><button class="btn primary" id="idAuto" type="button">Confirm all auto-merge ('+autoN+')</button></div></div>');
   var filters=card.querySelector("#idFilters");
   [["all","All"],["pending","Pending"],["confirmed","Merged"],["rejected","Rejected"]].forEach(function(f){
-    var b=elh('<button class="btn sm" type="button" data-f="'+f[0]+'"'+(UI.id_filter===f[0]?' style="background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)"':'')+'>'+f[1]+'</button>');
+    var b=elh('<button type="button" data-f="'+f[0]+'" data-on="'+(UI.id_filter===f[0]?"true":"false")+'">'+f[1]+'</button>');
     b.addEventListener("click",function(){ UI.id_filter=f[0]; render(); });
     filters.appendChild(b);
   });
@@ -1122,7 +1367,7 @@ VIEWS.identity=function(){
     var cTone=m.score>=AUTO?"var(--good-fg)":m.score<0.75?"var(--warn-fg)":"var(--ink-2)";
     var bTone=m.score>=AUTO?"var(--good-dot)":m.score<0.75?"var(--warn-dot)":"var(--accent)";
     var tr=elh('<tr'+(m.state==="rejected"?' style="opacity:.5"':'')+'>'+
-      '<td class="mono t-sub" style="vertical-align:top">'+m.id+'</td>'+
+      '<td style="vertical-align:top"><button class="rowlink mono t-sub drawer-clue" data-inspect="1" type="button" title="Open the match inspector">'+m.id+'</button></td>'+
       '<td><button class="rowlink" data-open="'+c.id+'" style="font-size:13px">'+esc(c.name)+'</button>'+
         '<div class="t-sub">has '+c.sources.length+' of 5 systems</div>'+
         '<div style="margin-top:5px;font-size:12px"><span class="pill mut" style="padding:2px 7px">'+esc(m.label)+'</span> <span class="muted">'+esc(m.sub)+'</span></div></td>'+
@@ -1132,8 +1377,9 @@ VIEWS.identity=function(){
         (done?'':'<div class="stepper"><button class="btn" data-step="-1" type="button" aria-label="lower">−</button><button class="btn" data-step="1" type="button" aria-label="raise">+</button></div>')+'</td>'+
       '<td style="min-width:150px">'+(done
         ? '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">'+pill(m.state==="confirmed"?"good":m.state==="rejected"?"bad":"warn",m.state==="confirmed"?"merged":m.state)+'<button class="rowlink" data-undo="1" type="button" style="font-size:11px">undo</button></div>'
-        : '<div style="display:flex;flex-direction:column;gap:5px"><button class="btn primary" data-act="confirmed" type="button">Confirm merge</button><div class="btn-row"><button class="btn sm" data-act="review" type="button">Review</button><button class="btn sm" data-act="rejected" type="button">Reject</button></div></div>')+'</td>');
+        : '<div style="display:flex;flex-direction:column;gap:6px;min-width:150px"><button class="btn primary" data-act="confirmed" type="button">Confirm merge</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button class="btn sm" data-act="review" type="button">Review</button><button class="btn sm" data-act="rejected" type="button">Reject</button></div></div>')+'</td>');
     tr.querySelector('[data-open]').addEventListener("click",function(){ openCustomer(c.id); });
+    tr.querySelector('[data-inspect]').addEventListener("click",function(){ matchDrawer(m.id); });
     tr.querySelectorAll("[data-step]").forEach(function(b){ b.addEventListener("click",function(){ nudgeMatch(m.id, +b.dataset.step*0.01); }); });
     tr.querySelectorAll("[data-act]").forEach(function(b){ b.addEventListener("click",function(){
       if(b.dataset.act==="confirmed") confirmMatch(m.id); else setMatch(m.id,b.dataset.act);
@@ -1230,9 +1476,12 @@ VIEWS.c360=function(){
   var scard=elh('<div class="card"><div class="card-head"><div><h2>Profile by source</h2><p>Only the systems this customer is present in &mdash; system &middot; operating company</p></div></div><div class="card-body"><div class="sources"></div></div></div>');
   var sg=scard.querySelector(".sources");
   c.sources.forEach(function(sy){
-    sg.appendChild(elh('<div class="srcblock"><h3>'+srcHeader(c,sy)+'</h3>'+
+    var blk=elh('<button class="srcblock srcblock-btn" type="button" title="Open the '+esc(SRC_SYS[sy].sys)+' inspector"><h3>'+srcHeader(c,sy)+'</h3>'+
       '<div class="mini" style="margin:-4px 0 8px">'+esc(sy)+' &middot; '+esc(SRC_SYS[sy].what)+'</div>'+
-      (srcData[sy]||[]).map(function(kv){return '<div class="kv"><span class="k">'+esc(kv[0])+'</span><span class="v">'+esc(kv[1])+'</span></div>';}).join("")+'</div>'));
+      (srcData[sy]||[]).map(function(kv){return '<div class="kv"><span class="k">'+esc(kv[0])+'</span><span class="v">'+esc(kv[1])+'</span></div>';}).join("")+
+      '<div class="pi-go" style="margin-top:9px">Inspect this source &rarr;</div></button>');
+    blk.addEventListener("click",function(){ sourceDrawer(c.id, sy); });
+    sg.appendChild(blk);
   });
   main.appendChild(scard);
 
@@ -1793,11 +2042,11 @@ VIEWS.flow=function(){
         '<span style="width:26px;height:26px;border-radius:7px;background:var(--pop-soft);display:grid;place-items:center;flex:none">'+
         '<svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--pop)" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round">'+ICONS[x.icon]+'</svg></span>'+
         '<span style="font-weight:600;font-size:12.5px">'+esc(x.t)+'</span></div>'+
-        '<div class="btn-row" style="align-items:center">'+pill(g.cls,"Goal · "+g.t)+'<button class="btn sm" type="button">See it &rarr;</button></div></div>'+
+        '<div class="btn-row" style="align-items:center">'+pill(g.cls,"Goal · "+g.t)+'<button class="btn sm" data-detail type="button">Details &rarr;</button></div></div>'+
       '<div class="chain"><span class="pill mut" style="font-size:9.5px">CRM: '+esc(x.crm)+'</span><span class="pill mut" style="font-size:9.5px">CVM: '+esc(x.cvm)+'</span><span class="adv-tag">Only here</span></div>'+
       '<div class="chain" style="margin-top:9px;color:var(--ink)"><span class="ca">Unlocks</span> &rarr; '+x.unlocks+'</div>'+
       '<div class="chain" style="margin-top:3px;color:var(--ink)"><span class="ca">Outcome</span> &rarr; '+x.outcome+'</div></div>');
-    row.querySelector("button").addEventListener("click",function(){ go(x.v); });
+    row.querySelector("[data-detail]").addEventListener("click",function(){ capabilityDrawer(x); });
     dc.querySelector(".card-body").appendChild(row);
   });
   wrap.appendChild(dc);
@@ -2204,6 +2453,7 @@ function welcomeGuide(){
 buildNav();
 STORE.subscribe(function(){ render(); });
 $("#fab").addEventListener("click",feedbackModal);
+$("#pet").addEventListener("click",function(e){ e.stopPropagation(); petPop(); });
 $("#resetBtn").addEventListener("click",function(){
   modal({title:"Reset demo data?", submitLabel:"Reset everything", cancelLabel:"Keep my data",
     body:'<div class="note">This clears every match decision, note, ticket, audience and piece of feedback saved in this browser, and reloads the seeded sample. Useful before handing the prototype to the next tester.</div>',
