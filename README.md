@@ -48,13 +48,32 @@ through it, and it navigates you between screens automatically.
 Plain HTML + CSS + JS in one file. **Typography and layout follow the DCT CDP
 console prototype** — IBM Plex Sans for text, IBM Plex Mono for labels, table
 headers and IDs, sidebar + top-bar shell, 1400px content width. The two IBM Plex
-webfonts load from Google Fonts (the only external request); with no internet the
-page falls back to the system UI font and still works.
+webfonts load from Google Fonts; with no internet the page falls back to the
+system UI font and still works. The only other external calls are the optional
+live-presence feature below — off unless you configure it.
 
 Light/dark follows the OS; the ☀/☾ button overrides it. Cellcard brand palette
 (Primary `#FF9F18` / deep `#F56300`, Pearl White `#FBF8F4`, Ultramarine
-`#0D90CE`, Pink `#DF1683`). No data is sent anywhere — all sample data, all
-saved locally. All figures are in USD.
+`#0D90CE`, Pink `#DF1683`). All sample data is saved locally; nothing leaves the
+browser except, if you turn it on, your display name and current screen for live
+presence. All figures are in USD.
+
+## Live presence (optional — off until you set it up)
+
+The top bar can show **who else has the app open and which screen they're on**,
+for reviewing together. It's off until you connect a free Firebase Realtime
+Database; until then the app is unchanged and still fully offline.
+
+Setup is a ~3-minute, one-time job — the exact steps are in a comment block at
+the top of the `<script>` in `index.html` (search for `FIREBASE_CONFIG`). In
+short: create a Firebase project, turn on Realtime Database, set its rules to
+`{ "rules": { "presence": { ".read": true, ".write": true } } }`, register a web
+app, and paste the four config values into `FIREBASE_CONFIG`. Only an ephemeral
+presence list is ever exposed — no customer data, no other state.
+
+Once connected: each viewer shows as a coloured initial in the top bar with a
+live dot; click the stack to see names and current screens; **Set my name** picks
+the label others see. People drop off automatically when they close the tab.
 
 ## The mascot & the info drawer
 

@@ -327,6 +327,36 @@
   .petitem .pi-d{display:block;font-size:11px;color:var(--ink-2);margin-top:4px;line-height:1.45;}
   .petitem .pi-go{display:block;font-size:10.5px;font-weight:600;color:var(--accent-text);margin-top:7px;}
 
+  /* live presence — who's in the app right now */
+  .presence{position:relative;display:flex;align-items:center;}
+  .pr-stack{display:flex;align-items:center;background:none;border:0;cursor:pointer;padding:3px 4px;font:inherit;border-radius:999px;}
+  .pr-stack:hover{background:var(--surface-3);}
+  .pr-av{width:24px;height:24px;border-radius:999px;display:grid;place-items:center;color:#fff;font-size:9px;font-weight:700;
+    font-family:var(--mono);letter-spacing:-.02em;border:2px solid var(--surface);margin-left:-8px;flex:none;}
+  .pr-av:first-child{margin-left:0;}
+  .pr-av.pr-more{background:var(--surface-3);color:var(--ink-2);}
+  .pr-count{font-size:10.5px;color:var(--ink-2);margin-left:8px;white-space:nowrap;}
+  .pr-live{width:6px;height:6px;border-radius:999px;background:var(--good-dot);margin-left:8px;flex:none;
+    box-shadow:0 0 0 0 var(--good-dot);}
+  @media (prefers-reduced-motion:no-preference){ .pr-live{animation:prlive 2s ease-out infinite;} }
+  @keyframes prlive{0%{box-shadow:0 0 0 0 var(--good-dot);}70%{box-shadow:0 0 0 5px rgba(0,0,0,0);}100%{box-shadow:0 0 0 0 rgba(0,0,0,0);}}
+  .pr-pop{position:absolute;top:36px;right:0;z-index:40;width:246px;background:var(--surface);border:1px solid var(--border-strong);
+    border-radius:11px;box-shadow:0 18px 44px rgba(0,0,0,.24);padding:7px;}
+  .pr-pop .pr-h{font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;font-size:9.5px;color:var(--ink-2);padding:6px 8px 8px;}
+  .pr-row{display:flex;gap:9px;align-items:center;padding:7px 8px;border-radius:7px;}
+  .pr-row + .pr-row{margin-top:1px;}
+  .pr-row:hover{background:var(--surface-2);}
+  .pr-av.sm{width:26px;height:26px;font-size:9.5px;border:0;margin:0;}
+  .pr-meta{display:flex;flex-direction:column;min-width:0;}
+  .pr-nm{font-size:12px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px;}
+  .pr-you{font-family:var(--mono);font-size:8.5px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;
+    border:1px solid var(--border-strong);border-radius:4px;padding:0 3px;}
+  .pr-vw{font-size:11px;color:var(--ink-2);}
+  .pr-edit{width:100%;margin-top:5px;background:none;border:0;border-top:1px solid var(--border);font:inherit;font-size:11px;
+    color:var(--accent-text);font-weight:600;cursor:pointer;padding:9px 0 5px;}
+  .pr-edit:hover{text-decoration:underline;}
+  @media (max-width:560px){ .pr-count{display:none;} }
+
   /* right-side info drawer */
   .drawer-scrim{position:fixed;inset:0;background:rgba(15,12,8,.44);z-index:64;opacity:0;transition:opacity .2s ease;}
   .drawer-scrim.on{opacity:1;}
@@ -494,6 +524,7 @@
         <div class="persona" id="tbPersona">&mdash;</div>
       </div>
       <div class="right">
+        <div id="presence" class="presence" hidden></div>
         <button class="btn sm" id="themeToggle" type="button" aria-label="Toggle colour theme" title="Switch between light and dark. Follows your OS until you click.">&#9788; Light</button>
       </div>
       <nav class="mobilenav" id="mobileNav" role="tablist" aria-label="Sections (mobile)"></nav>
@@ -524,8 +555,38 @@
 <div id="petHost"></div>
 <div id="toast" class="toast" role="status" hidden></div>
 
+<!-- Live presence (optional). Loads only if reachable; the app works fully without it. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
 <script>
 "use strict";
+
+/* =======================================================================
+   LIVE PRESENCE — optional. Shows who else has the app open, and on which
+   screen. Needs a free Firebase Realtime Database. Until you paste real
+   values below it stays off and the app is unchanged (still fully offline).
+
+   Setup (~3 min):
+   1. console.firebase.google.com → Add project (Analytics: off) → Create.
+   2. Build → Realtime Database → Create Database → pick a location →
+      "Start in test mode" → Enable.
+   3. Realtime Database → Rules → paste, then Publish:
+        { "rules": { "presence": { ".read": true, ".write": true } } }
+      (only the ephemeral presence list is exposed — nothing else.)
+   4. Project settings (gear) → General → Your apps → Web (</>) → register
+      (skip Hosting) → copy the firebaseConfig values into FIREBASE_CONFIG.
+      databaseURL looks like https://<id>-default-rtdb.firebaseio.com
+      (or ...europe-west1.firebasedatabase.app for an EU database).
+   5. Commit & push. Open the page in two browsers to see it working.
+   The web apiKey is not a secret — it is safe to commit publicly.
+   ======================================================================= */
+var FIREBASE_CONFIG = {
+  apiKey:      "PASTE_API_KEY",
+  authDomain:  "PASTE_PROJECT.firebaseapp.com",
+  databaseURL: "https://PASTE_PROJECT-default-rtdb.firebaseio.com",
+  projectId:   "PASTE_PROJECT"
+};
 
 /* ======================================================= helpers */
 function $(s,r){ return (r||document).querySelector(s); }
@@ -808,7 +869,7 @@ function seed(){
       {at:hoursAgo(48),kind:"offer",text:"Win-back offer sent to Ros Chanmony",cust:"MST-3374"}
     ],
     feedback:[],
-    ui:{ theme:"system", lastCustomerId:"MST-4471", lastView:"home", opCustomerId:"MST-4471", syncAudienceId:"AUD-01", seenWelcome:false }
+    ui:{ theme:"system", lastCustomerId:"MST-4471", lastView:"home", opCustomerId:"MST-4471", syncAudienceId:"AUD-01", seenWelcome:false, presenceName:"" }
   };
 }
 
@@ -1111,6 +1172,7 @@ function go(id,opt){
   $("#tbTitle").textContent=n.title;
   $("#tbPersona").textContent=n.persona;
   render();
+  presenceSetView(id);
   if(!opt.keepScroll) window.scrollTo(0,0);
 }
 function openCustomer(cid){ STORE.quiet(function(s){ s.ui.lastCustomerId=cid; }); go("c360"); }
@@ -2467,6 +2529,111 @@ function welcomeGuide(){
   });
 }
 
+/* ======================================================= live presence */
+var PRESENCE={ on:false, id:null, meRef:null, rootRef:null, peers:{}, hb:null, sig:"" };
+var PRESENCE_VIEW={ home:"Home", flow:"How it works", identity:"Identity resolution", c360:"Customer 360", operator:"Operator console", listsync:"List sync", rules:"Rules & scoring" };
+
+function presenceConfigured(){
+  return !!(window.firebase && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("PASTE")<0 && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.databaseURL.indexOf("PASTE")<0);
+}
+function presenceMyId(){
+  try{ var k="c360-presence-id", v=localStorage.getItem(k);
+    if(!v){ v=Math.random().toString(36).slice(2,10); localStorage.setItem(k,v); }
+    return v;
+  }catch(e){ return Math.random().toString(36).slice(2,10); }
+}
+function presenceMyName(){
+  var n=(STORE.get().ui.presenceName||"").trim();
+  return n || ("Guest "+String(PRESENCE.id||"").slice(0,4).toUpperCase());
+}
+function presenceColor(id){
+  var pal=["#f56300","#0d90ce","#df1683","#2f9e5e","#8a5a12","#6a3fb5"];
+  var h=0; for(var i=0;i<id.length;i++) h=(h*31+id.charCodeAt(i))>>>0;
+  return pal[h%pal.length];
+}
+function presenceInitials(name){
+  var w=String(name||"").replace(/[^A-Za-z0-9\s]/g," ").split(/\s+/).filter(Boolean);
+  return (w.slice(0,2).map(function(x){return x[0];}).join("") || "?").toUpperCase();
+}
+function presenceWriteMe(){
+  if(!PRESENCE.meRef) return;
+  try{ PRESENCE.meRef.set({ name:presenceMyName(), view:active, color:presenceColor(PRESENCE.id), ts:Date.now() }); }catch(e){}
+}
+function presenceSetView(v){
+  if(PRESENCE.on && PRESENCE.meRef){ try{ PRESENCE.meRef.update({ view:v, ts:Date.now() }); }catch(e){} }
+}
+function presenceInit(){
+  if(!presenceConfigured()) return;
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    var db=firebase.database();
+    PRESENCE.id=presenceMyId();
+    PRESENCE.rootRef=db.ref("presence");
+    PRESENCE.meRef=db.ref("presence/"+PRESENCE.id);
+    db.ref(".info/connected").on("value",function(snap){
+      if(snap.val()!==true) return;
+      try{ PRESENCE.meRef.onDisconnect().remove(); }catch(e){}
+      presenceWriteMe();
+    });
+    PRESENCE.rootRef.on("value",function(snap){ PRESENCE.peers=snap.val()||{}; renderPresence(); });
+    PRESENCE.on=true;
+    PRESENCE.hb=setInterval(function(){ if(PRESENCE.on && PRESENCE.meRef){ try{ PRESENCE.meRef.child("ts").set(Date.now()); }catch(e){} } }, 20000);
+    window.addEventListener("beforeunload",function(){ try{ PRESENCE.meRef.remove(); }catch(e){} });
+  }catch(e){ if(window.console) console.warn("Live presence off:", e && e.message); }
+}
+function presenceRename(){
+  modal({ title:"Your name for this review", submitLabel:"Save",
+    body:'<label class="field"><span>Shown to everyone else in the app</span>'+
+      '<input id="prName" type="text" maxlength="24" value="'+esc(STORE.get().ui.presenceName||"")+'" placeholder="e.g. Dara — CVM team"></label>',
+    onSubmit:function(ov){ STORE.update(function(st){ st.ui.presenceName=ov.querySelector("#prName").value.trim(); }); presenceWriteMe(); }});
+}
+function renderPresence(){
+  var host=document.getElementById("presence"); if(!host || !PRESENCE.on) return;
+  var now=Date.now();
+  var list=Object.keys(PRESENCE.peers||{}).map(function(id){
+    var p=PRESENCE.peers[id]||{};
+    return { id:id, name:p.name||"Guest", view:p.view, color:p.color||"#888", ts:p.ts||0, me:id===PRESENCE.id };
+  }).filter(function(p){ return now-p.ts < 70000; })
+    .sort(function(a,b){ return (b.me?1:0)-(a.me?1:0) || a.name.localeCompare(b.name); });
+
+  if(!list.length){ host.hidden=true; host.innerHTML=""; PRESENCE.sig=""; return; }
+  var sig=list.map(function(p){ return p.id+":"+p.name+":"+p.view; }).join(",");
+  var openPop=host.querySelector(".pr-pop") && !host.querySelector(".pr-pop").hidden;
+  if(sig===PRESENCE.sig && host.querySelector(".pr-stack")) return;   // only heartbeats changed
+  PRESENCE.sig=sig;
+
+  host.hidden=false; host.innerHTML="";
+  var others=list.filter(function(p){ return !p.me; }).length;
+  var stack=elh('<button class="pr-stack" type="button" title="Who’s in the app right now"></button>');
+  list.slice(0,4).forEach(function(p){
+    stack.appendChild(elh('<span class="pr-av" style="background:'+p.color+'" title="'+esc(p.name)+'">'+esc(presenceInitials(p.name))+'</span>'));
+  });
+  if(list.length>4) stack.appendChild(elh('<span class="pr-av pr-more">+'+(list.length-4)+'</span>'));
+  stack.appendChild(elh('<span class="pr-count">'+(others?others+" also here":"only you")+'</span>'));
+  stack.appendChild(elh('<span class="pr-live"></span>'));
+  host.appendChild(stack);
+
+  var pop=elh('<div class="pr-pop" hidden><div class="pr-h">In the app right now</div></div>');
+  list.forEach(function(p){
+    pop.appendChild(elh('<div class="pr-row"><span class="pr-av sm" style="background:'+p.color+'">'+esc(presenceInitials(p.name))+'</span>'+
+      '<span class="pr-meta"><span class="pr-nm">'+esc(p.name)+(p.me?' <span class="pr-you">you</span>':'')+'</span>'+
+      '<span class="pr-vw">'+esc(PRESENCE_VIEW[p.view]||"—")+'</span></span></div>'));
+  });
+  var edit=elh('<button class="pr-edit" type="button">'+((STORE.get().ui.presenceName||"").trim()?"Change my name":"Set my name")+'</button>');
+  pop.appendChild(edit);
+  host.appendChild(pop);
+  if(openPop) pop.hidden=false;
+
+  function closePop(){ pop.hidden=true; document.removeEventListener("click",onAway); }
+  function onAway(ev){ if(!host.contains(ev.target)) closePop(); }
+  stack.addEventListener("click",function(e){
+    e.stopPropagation();
+    if(pop.hidden){ pop.hidden=false; setTimeout(function(){ document.addEventListener("click",onAway); },0); }
+    else closePop();
+  });
+  edit.addEventListener("click",function(){ closePop(); presenceRename(); });
+}
+
 /* ======================================================= boot */
 buildNav();
 STORE.subscribe(function(){ render(); });
@@ -2478,6 +2645,7 @@ $("#resetBtn").addEventListener("click",function(){
     onSubmit:function(){ STORE.reset(); go("home"); toast("Demo data reset"); }});
 });
 go(STORE.get().ui.lastView || "home");
+presenceInit();
 if(!STORE.get().ui.seenWelcome){ setTimeout(welcomeGuide, 400); }
 </script>
 </body>
