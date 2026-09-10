@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer 360 Prototype</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23FF9F18'/%3E%3Cstop%20offset='1'%20stop-color='%23F56300'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='url(%23g)'/%3E%3Ccircle%20cx='11'%20cy='12'%20r='3'%20fill='%23fff'/%3E%3Ccircle%20cx='21'%20cy='12'%20r='3'%20fill='%23fff'%20fill-opacity='.55'/%3E%3Crect%20x='8'%20y='19'%20width='16'%20height='3.4'%20rx='1.7'%20fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* ===== clean & minimal — near-white surfaces, hairline borders, soft shadows,
+           Cellcard orange only on the active section and primary actions ===== */
+  :root{
+    --bg:#fbf8f4; --surface:#ffffff; --surface-2:#f7f3ee; --surface-3:#eeeae3;
+    --border:#e4e2e6; --border-strong:#c9c7cd;
+    --ink:#191a1c; --ink-2:#3d3e44; --ink-3:#5f6069;
+    --brand:#ff9f18;
+    --accent:#f56300; --accent-2:#dd5800; --accent-text:#b34a00;
+    --accent-soft:#ffe9d2; --accent-ink:#ffffff;
+    --pop:#c3126f; --pop-soft:#fbe1ef;
+    --good-bg:#e4f3ea; --good-fg:#186b3b; --good-dot:#26a15a;
+    --warn-bg:#f9edd4; --warn-fg:#7c4f06; --warn-dot:#c98a1e;
+    --bad-bg:#fbe5e1;  --bad-fg:#b3352b;  --bad-dot:#df5140;
+    --info-bg:#e0f0fa; --info-fg:#0a6a99; --info-dot:#0d90ce;
+    --radius:10px; --radius-sm:7px;
+    --shadow:0 1px 2px rgba(25,20,10,.06), 0 1px 3px rgba(25,20,10,.05);
+    --shadow-sm:0 1px 2px rgba(25,20,10,.06);
+    --grad:linear-gradient(140deg,#ff9f18 0%,#f56300 100%);
+    --font:'IBM Plex Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans","Khmer OS",sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#111112; --surface:#1a1a1d; --surface-2:#202024; --surface-3:#2a2a2f;
+      --border:#333339; --border-strong:#48484f;
+      --ink:#f1f1f3; --ink-2:#c4c4cb; --ink-3:#9a9aa3;
+      --brand:#ffab3d;
+      --accent:#ff8a2a; --accent-2:#ff9f18; --accent-text:#ffab5c;
+      --accent-soft:#3b2410; --accent-ink:#1c0e00;
+      --pop:#f072b0; --pop-soft:#3a1a2c;
+      --good-bg:#16311f; --good-fg:#5fca88; --good-dot:#34ac68;
+      --warn-bg:#332811; --warn-fg:#e2b464; --warn-dot:#d09a2e;
+      --bad-bg:#341d19;  --bad-fg:#f0958c;  --bad-dot:#df6152;
+      --info-bg:#122c3d; --info-fg:#6fc0e8; --info-dot:#2ba0d8;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 2px 8px -1px rgba(0,0,0,.4);
+      --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+      --grad:linear-gradient(140deg,#ffb040 0%,#ff8a2a 100%);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#111112; --surface:#1a1a1d; --surface-2:#202024; --surface-3:#2a2a2f;
+    --border:#333339; --border-strong:#48484f;
+    --ink:#f1f1f3; --ink-2:#c4c4cb; --ink-3:#9a9aa3;
+    --brand:#ffab3d;
+    --accent:#ff8a2a; --accent-2:#ff9f18; --accent-text:#ffab5c;
+    --accent-soft:#3b2410; --accent-ink:#1c0e00;
+    --pop:#f072b0; --pop-soft:#3a1a2c;
+    --good-bg:#16311f; --good-fg:#5fca88; --good-dot:#34ac68;
+    --warn-bg:#332811; --warn-fg:#e2b464; --warn-dot:#d09a2e;
+    --bad-bg:#341d19;  --bad-fg:#f0958c;  --bad-dot:#df6152;
+    --info-bg:#122c3d; --info-fg:#6fc0e8; --info-dot:#2ba0d8;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 2px 8px -1px rgba(0,0,0,.4);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+    --grad:linear-gradient(140deg,#ffb040 0%,#ff8a2a 100%);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;}
+  input[type=checkbox],input[type=radio]{accent-color:var(--accent);width:15px;height:15px;cursor:pointer;}
+  html,body{margin:0;padding:0;color:var(--ink);}
+  body{font-family:var(--font);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;background:var(--bg);}
+  *{border-color:var(--border);}
+  ::selection{background:var(--accent-soft);}
+  h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.011em;text-wrap:balance;color:var(--ink);}
+  a{color:var(--accent-text);font-weight:500;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+  .num{font-variant-numeric:tabular-nums;}
+  .eyebrow{font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:10.5px;font-weight:500;color:var(--ink-2);}
+  .muted{color:var(--ink-2);}
+  .mini{font-size:11.5px;color:var(--ink-2);}
+
+  /* shell */
+  .shell{display:flex;min-height:100vh;}
+  .sidebar{width:212px;flex:none;display:flex;flex-direction:column;gap:2px;padding:16px 12px;
+    border-right:1px solid var(--border);background:var(--surface);position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .side-brand{display:flex;align-items:center;gap:10px;padding:6px 8px 16px;margin-bottom:8px;border-bottom:1px solid var(--border);}
+  .side-brand .logo{width:28px;height:28px;border-radius:7px;background:var(--grad);color:#fff;flex:none;
+    display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:-.02em;box-shadow:var(--shadow-sm);}
+  .side-brand .name{font-weight:600;font-size:13px;line-height:1.2;}
+  .side-brand .sub{font-size:10px;color:var(--ink-2);margin-top:1px;}
+  .side-nav{display:flex;flex-direction:column;gap:1px;}
+  .nav-btn{appearance:none;border:0;background:transparent;font:inherit;cursor:pointer;text-align:left;width:100%;
+    display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--ink-2);
+    font-size:12.5px;font-weight:500;transition:background .13s,color .13s;}
+  .nav-btn svg{width:16px;height:16px;flex:none;stroke:currentColor;opacity:.72;}
+  .nav-btn:hover{background:var(--surface-3);color:var(--ink);}
+  .nav-btn[aria-selected="true"]{background:var(--accent-soft);color:var(--accent-text);font-weight:600;}
+  .nav-btn[aria-selected="true"] svg{opacity:1;}
+  .nav-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .navbadge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:1px 7px;min-width:18px;text-align:center;line-height:1.5;}
+  .nav-btn[aria-selected="true"] .navbadge{background:var(--accent-text);}
+  .side-foot{margin-top:auto;padding:14px 10px 4px;border-top:1px solid var(--border);
+    font-size:10.5px;line-height:1.7;color:var(--ink-2);}
+  .side-foot button{background:none;border:0;font:inherit;font-size:10.5px;color:var(--accent-text);font-weight:600;cursor:pointer;padding:0;margin-top:4px;}
+  .side-foot button:hover{text-decoration:underline;}
+
+  .content{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:12px 22px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .topbar h1{font-size:15px;letter-spacing:-.011em;font-weight:600;line-height:1.25;}
+  .topbar .persona{font-size:11px;color:var(--ink-2);margin-top:2px;}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .mobilenav{display:none;}
+
+  main{max-width:1400px;width:100%;margin:0 auto;padding:20px 22px 84px;}
+  .panel{display:flex;flex-direction:column;gap:20px;}
+  @media (prefers-reduced-motion:no-preference){
+    .panel{animation:fade .16s ease;}
+    @keyframes fade{from{opacity:.5;}to{opacity:1;}}
+  }
+  .panel-head p{margin:0;color:var(--ink-2);font-size:13.5px;max-width:78ch;line-height:1.65;}
+
+  @media (max-width:880px){
+    .sidebar{display:none;}
+    .topbar{gap:10px;padding:13px 18px;}
+    .mobilenav{display:flex;gap:6px;overflow-x:auto;width:100%;order:5;padding-top:6px;}
+    .mobilenav .nav-btn{width:auto;padding:7px 13px;border-radius:8px;background:var(--surface-2);white-space:nowrap;}
+    .mobilenav .nav-btn svg,.mobilenav .navbadge{display:none;}
+    .mobilenav .nav-btn[aria-selected="true"]{background:var(--accent-soft);}
+    main{padding:20px 15px 80px;}
+  }
+
+  /* cards */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .card-head{padding:15px 18px;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  .card-head h2{font-size:14px;font-weight:600;}
+  .card-head p{margin:3px 0 0;font-size:12px;color:var(--ink-2);}
+  .card-body{padding:18px;}
+  .grid{display:grid;gap:16px;}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  .split{display:flex;gap:20px;align-items:flex-start;}
+  .split > .col-main{flex:1;min-width:0;}
+  .split > .col-side{width:330px;flex:none;position:sticky;top:74px;align-self:flex-start;}
+  @media (max-width:920px){ .split > .col-side{position:static;} }
+  @media (max-width:1000px){ .g4{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:920px){
+    .g2,.g3{grid-template-columns:1fr;}
+    .split{flex-direction:column;} .split > .col-side{width:100%;}
+  }
+  @media (max-width:560px){ .g4{grid-template-columns:1fr;} }
+
+  /* tables */
+  .twrap{overflow-x:auto;}
+  table.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
+  table.tbl th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;font-weight:500;
+    color:var(--ink-2);text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap;}
+  table.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  table.tbl tr:last-child td{border-bottom:0;}
+  table.tbl tbody tr:hover{background:var(--surface-2);}
+  .t-sub{font-size:11.5px;color:var(--ink-2);}
+
+  /* pills */
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;line-height:1;
+    padding:4px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap;}
+  .pill .dot{width:6px;height:6px;border-radius:999px;flex:none;}
+  .pill.good{background:var(--good-bg);color:var(--good-fg);} .pill.good .dot{background:var(--good-dot);}
+  .pill.warn{background:var(--warn-bg);color:var(--warn-fg);} .pill.warn .dot{background:var(--warn-dot);}
+  .pill.bad{background:var(--bad-bg);color:var(--bad-fg);}   .pill.bad .dot{background:var(--bad-dot);}
+  .pill.info{background:var(--info-bg);color:var(--info-fg);} .pill.info .dot{background:var(--info-dot);}
+  .pill.mut{background:var(--surface-3);color:var(--ink-2);}  .pill.mut .dot{background:var(--ink-3);}
+  .pill.accent{background:var(--accent-soft);color:var(--accent-text);} .pill.accent .dot{background:var(--accent);}
+  .pill.pop{background:var(--pop-soft);color:var(--pop);} .pill.pop .dot{background:var(--pop);}
+
+  /* buttons */
+  .btn{appearance:none;font:inherit;font-size:12px;font-weight:500;border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--ink-2);padding:6px 11px;border-radius:7px;cursor:pointer;white-space:nowrap;
+    transition:background .13s,border-color .13s,color .13s;}
+  .btn:hover{background:var(--surface-3);color:var(--ink);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  .btn.primary:hover{background:var(--accent-2);border-color:var(--accent-2);color:var(--accent-ink);}
+  .btn.sm{padding:5px 9px;font-size:11.5px;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .rowlink{background:none;border:0;font:inherit;color:var(--accent-text);font-weight:500;cursor:pointer;padding:0;}
+  .rowlink:hover{text-decoration:underline;}
+
+  /* forms */
+  select,input[type=text],input[type=search]{
+    font:inherit;font-size:13px;color:var(--ink);background:var(--surface);
+    border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:7px 11px;}
+  select{cursor:pointer;padding-right:26px;}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent;}
+  label.fld{display:flex;flex-direction:column;gap:5px;font-family:var(--mono);font-size:10px;color:var(--ink-2);
+    text-transform:uppercase;letter-spacing:.07em;font-weight:500;}
+  .controls{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;}
+
+  /* metric / tile */
+  .metric{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:16px;
+    display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-sm);}
+  .metric .k{font-size:26px;font-weight:600;line-height:1;letter-spacing:-.022em;color:var(--ink);}
+  button.metric{cursor:pointer;text-align:left;transition:border-color .13s,transform .05s;font:inherit;}
+  button.metric:hover{border-color:var(--border-strong);}
+  button.metric:active{transform:translateY(1px);}
+  .track{height:6px;border-radius:999px;background:var(--surface-3);overflow:hidden;}
+  .track > i{display:block;height:100%;border-radius:999px;}
+
+  /* source blocks */
+  .sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;}
+  .srcblock{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);padding:13px;}
+  .srcblock h3{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:500;color:var(--accent-text);margin-bottom:9px;}
+  .kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12.5px;}
+  .kv .k{color:var(--ink-2);} .kv .v{text-align:right;color:var(--ink);font-weight:500;}
+
+  .halves{display:grid;grid-template-columns:1fr 1fr;}
+  @media (max-width:720px){.halves{grid-template-columns:1fr;}}
+  .halves > div{padding:16px 18px;}
+  .halves > div:first-child{border-right:1px solid var(--border);}
+  @media (max-width:720px){.halves > div:first-child{border-right:0;border-bottom:1px solid var(--border);}}
+  .halves h3{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:500;color:var(--accent-text);margin-bottom:11px;}
+
+  .compare .mark{font-weight:600;}
+  .compare .yes{color:var(--good-fg);} .compare .part{color:var(--warn-fg);} .compare .no{color:var(--ink-3);}
+  .compare .plat{background:var(--accent-soft);}
+  .compare thead th.plat{color:var(--accent-text);}
+
+  /* pick list */
+  .picklist{display:flex;flex-direction:column;max-height:calc(100vh - 208px);min-height:300px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm);}
+  .scoreact{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:7px;
+    box-shadow:var(--shadow-sm);text-align:left;font:inherit;cursor:pointer;transition:border-color .13s,transform .05s;width:100%;}
+  .scoreact:hover{border-color:var(--accent);} .scoreact:active{transform:translateY(1px);}
+  .scoreact .k{font-size:24px;font-weight:600;line-height:1;letter-spacing:-.022em;color:var(--ink);}
+  .scoreact .cta{font-size:11px;font-weight:600;color:var(--accent-text);margin-top:2px;display:flex;align-items:center;gap:4px;}
+  .pickitem{text-align:left;background:transparent;border:0;border-bottom:1px solid var(--border);font:inherit;
+    padding:11px 13px;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--ink);transition:background .12s;}
+  .pickitem:last-child{border-bottom:0;}
+  .pickitem:hover{background:var(--surface-2);}
+  .pickitem[aria-current="true"]{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent);}
+
+  /* misc */
+  .avatar{width:38px;height:38px;border-radius:10px;background:var(--surface-3);color:var(--ink-2);
+    display:grid;place-items:center;font-weight:600;font-size:12px;flex:none;font-family:var(--mono);letter-spacing:-.02em;}
+  .avatar.br{background:var(--accent-soft);color:var(--accent-text);}
+  .hrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .chips{display:flex;flex-wrap:wrap;gap:5px;}
+  .list{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+  .list > .li{padding:11px 13px;border-bottom:1px solid var(--border);font-size:12.5px;}
+  .list > .li:last-child{border-bottom:0;}
+  .note{font-size:12px;color:var(--ink-2);}
+  .warnnote{font-size:12px;color:var(--warn-fg);background:var(--warn-bg);border-radius:var(--radius-sm);padding:9px 12px;}
+  .empty{text-align:center;padding:30px 20px;color:var(--ink-2);font-size:13px;}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--border);background:var(--surface-2);}
+  .seg{display:inline-flex;background:var(--surface-3);border-radius:8px;padding:2px;gap:2px;}
+  .seg button{font:inherit;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:6px;color:var(--ink-2);border:0;background:none;cursor:pointer;}
+  .seg button[data-on="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm);}
+  .stepper{display:inline-flex;gap:4px;}
+  .stepper button{width:22px;height:22px;line-height:1;padding:0;font-size:13px;border-radius:6px;}
+  .checkcell{width:34px;text-align:center;}
+
+  /* feed */
+  .feed{display:flex;flex-direction:column;}
+  .feed-row{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12.5px;align-items:flex-start;}
+  .feed-row:last-child{border-bottom:0;}
+  .feed-ic{width:26px;height:26px;border-radius:8px;flex:none;display:grid;place-items:center;background:var(--surface-3);}
+  .feed-ic svg{width:14px;height:14px;stroke:var(--ink-2);fill:none;}
+  .feed-tt{color:var(--ink-3);font-size:11px;margin-top:2px;}
+
+  /* modal */
+  .modal-ov{position:fixed;inset:0;background:rgba(15,12,8,.5);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:7vh 16px;overflow:auto;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.34);width:100%;max-width:440px;overflow:hidden;}
+  .modal h3{padding:15px 18px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;}
+  .modal .mbody{padding:18px;display:flex;flex-direction:column;gap:14px;font-size:13px;}
+  .modal .mfoot{padding:13px 18px;border-top:1px solid var(--border);background:var(--surface-2);display:flex;justify-content:flex-end;gap:8px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field > span{font-family:var(--mono);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2);}
+  .field input,.field textarea,.field select{width:100%;font:inherit;font-size:13px;color:var(--ink);
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:7px;padding:8px 11px;}
+  .field textarea{min-height:88px;resize:vertical;}
+  .stars{display:flex;gap:5px;}
+  .stars button{background:none;border:0;cursor:pointer;font-size:24px;line-height:1;color:var(--border-strong);padding:0;}
+  .stars button.on{color:var(--brand);}
+
+  .fab{position:fixed;right:20px;bottom:20px;z-index:55;display:flex;align-items:center;gap:8px;
+    background:var(--ink);color:var(--surface);border:0;border-radius:999px;padding:10px 16px;font:inherit;font-size:12px;font-weight:500;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+  .fab:hover{filter:brightness(1.12);}
+  .fab svg{width:15px;height:15px;stroke:currentColor;fill:none;}
+
+  .spark svg{display:block;width:100%;height:60px;}
+  [hidden]{display:none!important;}
+  .toast{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);background:var(--ink);color:var(--surface);
+    font-size:12.5px;font-weight:500;padding:10px 16px;border-radius:9px;box-shadow:0 10px 34px rgba(0,0,0,.24);z-index:58;max-width:92vw;text-align:center;}
+
+  /* advanced-capability marker — Cellcard secondary pink */
+  .adv-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:500;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--pop);background:var(--pop-soft);
+    padding:3px 8px;border-radius:999px;white-space:nowrap;}
+  .adv-tag::before{content:"";width:5px;height:5px;border-radius:999px;background:var(--pop);flex:none;}
+  .farrow{color:var(--info-dot);}
+
+  /* flow board (How it works) */
+  .board{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);
+    background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:18px 18px;background-position:-1px -1px;
+    padding:20px;overflow-x:auto;}
+  .flowrow{display:flex;align-items:stretch;gap:0;min-width:min-content;}
+  .fnode{flex:none;width:172px;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;
+    padding:12px 13px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:5px;}
+  button.fnode{cursor:pointer;font:inherit;text-align:left;transition:border-color .13s,transform .05s;}
+  button.fnode:hover{border-color:var(--accent);}
+  button.fnode:active{transform:translateY(1px);}
+  .fnode .fh{display:flex;align-items:center;gap:7px;}
+  .fnode .fh svg{width:15px;height:15px;stroke:var(--accent-text);fill:none;flex:none;}
+  .fnode .ft{font-weight:600;font-size:12px;line-height:1.25;}
+  .fnode .fs{font-size:10.5px;color:var(--ink-2);line-height:1.4;}
+  .fnode .fstep{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;}
+  .farrow{flex:none;width:34px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);}
+  .farrow svg{width:20px;height:14px;stroke:currentColor;fill:none;}
+  .lane{display:flex;gap:14px;align-items:flex-start;}
+  .lane-label{flex:none;width:120px;padding-top:10px;}
+  .lane-label .ll-t{font-weight:600;font-size:12.5px;}
+  .lane-label .ll-s{font-size:10.5px;color:var(--ink-2);margin-top:2px;}
+  @media (max-width:720px){ .lane{flex-direction:column;} .lane-label{width:auto;padding-top:0;} }
+
+  /* tour */
+  .tour-target{outline:2px solid var(--accent)!important;outline-offset:3px;border-radius:8px;
+    animation:tourpulse 1.5s ease-in-out infinite;}
+  @keyframes tourpulse{0%,100%{box-shadow:0 0 0 0 rgba(245,99,0,.28);}50%{box-shadow:0 0 0 7px rgba(245,99,0,0);}}
+  .tourdock{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:57;width:440px;max-width:calc(100vw - 32px);
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;box-shadow:0 16px 44px rgba(0,0,0,.3);overflow:hidden;}
+  .tourdock .td-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--surface-2);}
+  .tourdock .td-h .tt{font-weight:600;font-size:12.5px;}
+  .tourdock .td-h .ts{font-family:var(--mono);font-size:10px;color:var(--ink-2);letter-spacing:.05em;}
+  .tourdock .td-b{padding:13px 14px;font-size:12.5px;line-height:1.5;color:var(--ink);}
+  .tourdock .td-f{display:flex;justify-content:space-between;gap:8px;padding:11px 14px;border-top:1px solid var(--border);}
+  .tourdock .td-close{background:none;border:0;color:var(--ink-3);cursor:pointer;font:inherit;font-size:11.5px;padding:0;}
+  .tourdock .td-close:hover{color:var(--ink);}
+  @media (max-width:520px){ .tourdock{bottom:14px;} }
+
+  /* rules & scoring */
+  .field-row{display:flex;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+  .field-row:last-child{border-bottom:0;}
+  .field-row .fr-main{flex:1;min-width:0;}
+  .field-row .fr-l{font-size:12.5px;font-weight:500;}
+  .field-row .fr-n{font-size:10.5px;color:var(--ink-2);margin-top:2px;line-height:1.45;}
+  .field-row .fr-meta{display:flex;align-items:center;gap:8px;margin-top:6px;}
+  .cov{height:4px;border-radius:999px;background:var(--surface-3);width:70px;overflow:hidden;flex:none;}
+  .cov>i{display:block;height:100%;background:var(--info-dot);}
+  .cov-t{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.03em;}
+  .wstep{display:inline-flex;align-items:stretch;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--surface);flex:none;}
+  .wstep button{width:28px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;font-size:15px;line-height:1;padding:0;}
+  .wstep button:hover{background:var(--surface-3);color:var(--ink);}
+  .wstep input{width:52px;border:0;text-align:center;font-family:var(--mono);font-size:12.5px;background:transparent;color:var(--ink);
+    -moz-appearance:textfield;appearance:textfield;padding:6px 0;}
+  .wstep input::-webkit-outer-spin-button,.wstep input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .wstep input:focus{outline:0;background:var(--accent-soft);}
+  .wu{font-family:var(--mono);font-size:9px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;flex:none;width:58px;}
+  .xbtn{width:26px;height:26px;flex:none;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--ink-3);cursor:pointer;font-size:14px;line-height:1;}
+  .xbtn:hover{color:var(--bad-fg);border-color:var(--bad-dot);background:var(--bad-bg);}
+  .recstrip{display:flex;flex-wrap:wrap;gap:6px;}
+  .recchip{display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--pop);background:var(--pop-soft);color:var(--pop);
+    font-size:11px;font-weight:500;padding:5px 9px;border-radius:999px;cursor:pointer;}
+  .recchip:hover{filter:brightness(.97);}
+  .recchip .rp{font-family:var(--mono);font-size:9.5px;opacity:.85;}
+  .formula{font-family:var(--mono);font-size:10.5px;line-height:1.65;color:var(--ink-2);background:var(--surface-2);
+    border:1px solid var(--border);border-radius:7px;padding:9px 11px;word-break:break-word;}
+  .bd{border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:11.5px;}
+  .bd .bdr{display:flex;justify-content:space-between;gap:10px;padding:7px 11px;border-bottom:1px solid var(--border);}
+  .bd .bdr:last-child{border-bottom:0;}
+  .bd .bdr.tot{font-weight:600;background:var(--surface-2);}
+  .bd .bda{font-family:var(--mono);}
+
+  /* end-goal / impact */
+  .pillar{border:1px solid var(--border);border-radius:9px;padding:14px;background:var(--surface-2);}
+  .pillar .ph{display:flex;align-items:center;gap:8px;}
+  .pillar .pd{font-size:11.5px;color:var(--ink-2);margin-top:6px;line-height:1.55;}
+  .chain{display:flex;flex-wrap:wrap;gap:6px 5px;align-items:center;font-size:11.5px;color:var(--ink-2);line-height:1.5;}
+  .chain .ca{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="side-brand">
+      <div class="logo">360</div>
+      <div>
+        <div class="name">Customer 360</div>
+        <div class="sub">Prototype &middot; DCT Group</div>
+      </div>
+    </div>
+    <nav class="side-nav" id="sideNav" role="tablist" aria-label="Sections"></nav>
+    <div class="side-foot">
+      Prototype &middot; sample data, saved in this browser.<br>
+      <button id="resetBtn" type="button">Reset demo data</button>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div>
+        <h1 id="tbTitle">&mdash;</h1>
+        <div class="persona" id="tbPersona">&mdash;</div>
+      </div>
+      <div class="right">
+        <button class="btn sm" id="themeToggle" type="button" aria-label="Toggle colour theme">&#9788; Light</button>
+      </div>
+      <nav class="mobilenav" id="mobileNav" role="tablist" aria-label="Sections (mobile)"></nav>
+    </header>
+    <main id="view"></main>
+  </div>
+</div>
+
+<button class="fab" id="fab" type="button">
+  <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
+  Feedback
+</button>
+
+<div id="tourHost"></div>
+<div id="modalHost"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+"use strict";
+
+/* ======================================================= helpers */
+function $(s,r){ return (r||document).querySelector(s); }
+function elh(html){ var t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstElementChild; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+function initials(name){ return name.split(/[\s&]+/).filter(Boolean).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase(); }
+function pill(t,l){ return '<span class="pill '+t+'"><span class="dot"></span>'+esc(l)+'</span>'; }
+function fmtInt(n){ return n.toLocaleString("en-US"); }
+function rel(ms){
+  var d=Date.now()-ms; if(d<0) d=0;
+  var s=Math.round(d/1000); if(s<45) return "just now";
+  var m=Math.round(s/60); if(m<60) return m+"m ago";
+  var h=Math.round(m/60); if(h<24) return h+"h ago";
+  var dd=Math.round(h/24); if(dd<7) return dd+"d ago";
+  return new Date(ms).toISOString().slice(0,10);
+}
+function hoursAgo(h){ return Date.now()-h*3600000; }
+var toastTimer;
+function toast(msg){ var t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.hidden=true;},3000); }
+function parseTenure(s){ var y=(String(s).match(/(\d+)\s*y/)||[0,0])[1], m=(String(s).match(/(\d+)\s*m/)||[0,0])[1]; return (+y)*12+(+m); }
+
+var SYSTEMS=["CRM","Billing","Network","Support","Digital"];
+var SRC_SYS={
+  CRM:{sys:"Siebel CRM",           what:"subscription & contact master"},
+  Billing:{sys:"Kenan billing",    what:"charges, plan, payments"},
+  Network:{sys:"Usage mediation",  what:"data sessions, cell, radio"},
+  Support:{sys:"Freshdesk",        what:"tickets & interactions"},
+  Digital:{sys:"MyCellcard app",   what:"logins & in-app activity"}
+};
+function srcOpco(c,sy){ return sy==="Network" ? "Telcotech" : (sy==="Billing" && c.opco==="EZECOM") ? "EZECOM" : (c.opco||"Cellcard"); }
+function srcHeader(c,sy){ return esc(SRC_SYS[sy].sys)+' <span style="color:var(--ink-3)">&middot; '+esc(srcOpco(c,sy))+'</span>'; }
+var CHURN_RISK=60;   /* kept in sync with config in recompute() */
+var AUTO=0.90;
+function BANDS(){ var t=STORE.get().config.thresholds; return {med:t.bandMedium, high:t.bandHigh}; }
+function band(v){ var b=BANDS(); return v>=b.high?"High":v>=b.med?"Medium":"Low"; }
+function churnTone(v){ var b=BANDS(); return v>=b.high?"bad":v>=b.med?"warn":"good"; }
+function scoreTone(v){ var b=BANDS(); return v>=b.high?"good":v>=b.med?"warn":"mut"; }
+function clampScore(v){ return Math.max(0,Math.min(100,Math.round(v))); }
+
+/* --- plug-and-play scoring engine. Each score = base + Σ (field.raw(inputs) × weight).
+       The library of available fields is FIELDLIB; the active set + weights live in STORE.config.scores. --- */
+var FIELDLIB=[
+  {key:"open_tickets",       label:"Open support tickets",          note:"Count of tickets currently in status Open",                    source:"Support",    coverage:100, unit:"/ ticket",    suggest:{churn:15},              raw:function(x){return x.open;}},
+  {key:"idle_30d",           label:"No activity for 30+ days",       note:"Most recent event across any source is older than 30 days",     source:"All sources",coverage:100, unit:"points",      suggest:{churn:16},              raw:function(x){return x.idleDays>30?1:0;}},
+  {key:"active_7d",          label:"Active within the last 7 days",  note:"Any event across any source in the past week",                  source:"All sources",coverage:100, unit:"points",      suggest:{engagement:12},         raw:function(x){return x.idleDays<=7?1:0;}},
+  {key:"renewal_90d",        label:"Contract renews within 90 days", note:"Renewal date is 90 days out or less",                           source:"Billing",    coverage:92,  unit:"points",      suggest:{churn:15},              raw:function(x){return x.renewalDays<=90?1:0;}},
+  {key:"consent_withdrawn",  label:"Marketing consent withdrawn",    note:"Customer has opted out of marketing",                           source:"CRM",        coverage:100, unit:"points",      suggest:{churn:12},              raw:function(x){return x.consentW?1:0;}},
+  {key:"area_complaints",    label:"Network complaints in home area",note:"Complaints logged in the customer's home cell area",            source:"Network",    coverage:74,  unit:"/ complaint",suggest:{churn:10},              raw:function(x){return x.area;}},
+  {key:"tenure_years",       label:"Years of tenure",               note:"Applied per year since the customer joined",                    source:"CRM",        coverage:100, unit:"/ year",     suggest:{churn:-2.5, upsell:3},  raw:function(x){return x.tenureYears;}},
+  {key:"app_sessions",       label:"App sessions in last 30 days",   note:"App opens in the last 30 days, capped at 20",                   source:"Digital",    coverage:68,  unit:"/ session", suggest:{engagement:4},          raw:function(x){return Math.min(x.sessions,20);}},
+  {key:"push_enabled",       label:"Push notifications enabled",     note:"Customer accepts push notifications",                           source:"Digital",    coverage:68,  unit:"points",      suggest:{engagement:12},         raw:function(x){return x.consentW?0:1;}},
+  {key:"autopay",            label:"Autopay active",                 note:"Customer pays automatically",                                   source:"Billing",    coverage:88,  unit:"points",      suggest:{engagement:9},          raw:function(x){return 1;}},
+  {key:"over_plan_usage",    label:"Usage over plan allowance",      note:"Data usage above 100% of the plan allowance",                   source:"Network",    coverage:74,  unit:"points",      suggest:{upsell:20},             raw:function(x){return x.usage>1?1:0;}},
+  {key:"engagement_high",    label:"Engagement score is High",       note:"The engagement score is in the High band",                      source:"Derived",    coverage:100, unit:"points",      suggest:{upsell:16},             raw:function(x){return x.engHigh?1:0;}},
+  {key:"not_top_tier",       label:"Not on the top plan tier",       note:"A higher tier exists to move the customer to",                  source:"Billing",    coverage:92,  unit:"points",      suggest:{upsell:14},             raw:function(x){return x.atTop?0:1;}},
+  {key:"low_arpu",           label:"Low ARPU",                       note:"Monthly spend below the threshold",                             source:"Billing",    coverage:100, unit:"points",      suggest:{upsell:-8},             raw:function(x){return x.arpuLow?1:0;}},
+  {key:"nps_detractor",      label:"NPS detractor (last survey)",    note:"Scored 0–6 on the most recent survey — strong churn signal, but only run on a sample", source:"Support", coverage:41, unit:"points", suggest:{churn:18}, raw:function(x){return x.npsDetractor?1:0;}},
+  {key:"bill_shock",         label:"Bill up 20%+ month-on-month",    note:"This cycle's charge is at least 20% higher than last",           source:"Billing",    coverage:88,  unit:"points",      suggest:{churn:13},              raw:function(x){return x.billShock?1:0;}},
+  {key:"roamed_recent",      label:"Roamed in the last 30 days",     note:"Any roaming session recently",                                  source:"Network",    coverage:33,  unit:"points",      suggest:{upsell:9},              raw:function(x){return x.roamed?1:0;}},
+  {key:"made_referral",      label:"Made a referral",               note:"Referred at least one new customer through the app",            source:"Digital",    coverage:55,  unit:"points",      suggest:{engagement:10, churn:-6},raw:function(x){return x.referred?1:0;}}
+];
+var FIELD={}; FIELDLIB.forEach(function(f){ FIELD[f.key]=f; });
+
+function scoreInputs(c, forScore){
+  var x={
+    open: c.tickets.filter(function(t){return t.status==="Open";}).length,
+    idleDays: c.timeline.length ? Math.round((Date.now()-c.timeline[0].at)/86400000) : 60,
+    tenureYears: (c.sig?c.sig.tenureMonths:parseTenure(c.tenure))/12,
+    consentW: c.consent==="withdrawn",
+    area: c.sig?c.sig.areaComplaints:0,
+    sessions: c.sig?c.sig.sessions30d:6,
+    renewalDays: c.sig?c.sig.renewalDays:120,
+    usage: c.sig?c.sig.usageRatio:1,
+    atTop: c.sig?c.sig.atTopTier:false,
+    arpuLow: /₭\s*(1[0-9]|2[0-4])k\b/.test(c.arpu),
+    npsDetractor: c.sig?!!c.sig.npsDetractor:false,
+    billShock: c.sig?!!c.sig.billShock:false,
+    roamed: c.sig?!!c.sig.roamed:false,
+    referred: c.sig?!!c.sig.referred:false
+  };
+  x.engHigh = forScore==="engagement" ? false : (evalScore(c,"engagement").value >= BANDS().high);
+  return x;
+}
+function evalScore(c, key){
+  var sc=STORE.get().config.scores[key], x=scoreInputs(c, key);
+  var parts=[{l:"Base rate", a:sc.base, k:"__base"}];
+  (sc.fields||[]).forEach(function(f){
+    var def=FIELD[f.key]; if(!def) return;
+    var rv=def.raw(x);
+    var amt=Math.round(rv*f.weight*10)/10;
+    if(amt===0 && rv===0) return;
+    var lbl=def.label;
+    if(def.unit.indexOf("/")===0 && rv>1) lbl=(Math.round(rv*10)/10)+" × "+def.label.toLowerCase();
+    parts.push({l:lbl, a:amt, k:f.key});
+  });
+  var raw=parts.reduce(function(s,q){return s+q.a;},0);
+  return {value:clampScore(raw), raw:Math.round(raw*10)/10, parts:parts};
+}
+function computeScore(c,key){ return evalScore(c,key).value; }
+function computeDQ(list){
+  var w=STORE.get().config.dq; if(!list.length) return 0;
+  return clampScore(list.reduce(function(a,c){return a + w.base + c.sources.length*w.perSource;},0)/list.length);
+}
+function fieldCoverageWarn(key){ var d=FIELD[key]; return d && d.coverage<55; }
+function recommendedFields(scoreKey){
+  var active=(STORE.get().config.scores[scoreKey].fields||[]).map(function(f){return f.key;});
+  return FIELDLIB.filter(function(f){ return f.suggest[scoreKey]!=null && active.indexOf(f.key)<0; });
+}
+function recompute(){
+  var s=STORE.get();
+  CHURN_RISK = s.config.thresholds.atRisk;
+  AUTO = s.config.thresholds.autoMerge;
+  s.customers.forEach(function(c){
+    c.engagement=computeScore(c,"engagement");
+    c.churn=computeScore(c,"churn");
+    c.upsell=computeScore(c,"upsell");
+  });
+}
+
+/* ======================================================= seed data */
+function seed(){
+  function C(id,name,seg,srcs,churn,upsell,eng,arpu,tenure,plan,consent,tin){
+    var h4=id.charCodeAt(4), h5=id.charCodeAt(5), h6=id.charCodeAt(6);
+    return {id:id,name:name,segment:seg,sources:srcs.slice(),churn:churn,upsell:upsell,engagement:eng,
+      arpu:arpu,tenure:tenure,plan:plan,consent:consent,tin:tin||null,
+      opco: /Fibre/.test(plan)?"EZECOM": /Loyalty/.test(plan)?"EngageX": seg==="B2B"?"Cellcard B2B":"Cellcard",
+      dob:"1990-0"+((h4%9)+1)+"-1"+((h5%9)+1),
+      email:(name.split(" ")[0].toLowerCase())+"."+(name.split(" ").slice(-1)[0].toLowerCase())+"@gmail.com",
+      phone:"+855 "+(10+h4%80)+" "+(100+h5%800)+" "+(100+h6%800),
+      natId:"09"+(10+h5%80)+"••••",
+      cell:["Toul Kork","Chamkarmon","Sen Sok","BKK1","Daun Penh","Chbar Ampov"][h6%6],
+      tickets:[], notes:[], offers:[], timeline:[],
+      spark:[3.1,3.4,2.9,3.8,4.2,4.0,3.6,4.4,4.1,3.9,4.7,4.3,5.0,4.6].map(function(x){return +(x*(0.6+churn/120)).toFixed(1);}),
+      sig:{
+        tenureMonths: parseTenure(tenure),
+        sessions30d: eng>60 ? 10+h6%12 : eng>40 ? 5+h6%7 : 1+h6%4,
+        renewalDays: churn>60 ? 20+h5%55 : 90+h5%180,
+        areaComplaints: h5%3===0 ? 1 : 0,
+        usageRatio: +(0.7 + upsell/160 + (h4%20)/70).toFixed(2),
+        atTopTier: /Unlimited 40|Gold|Fibre 200|Enterprise/.test(plan),
+        npsDetractor: churn>60 && h4%2===0,
+        billShock: h6%4===0,
+        roamed: h4%5===0,
+        referred: eng>65 && h5%2===0
+      }
+    };
+  }
+  var cs=[
+    C("MST-4471","Sok Dara","Consumer postpaid",["CRM","Billing","Network","Support","Digital"],38,61,72,"₭ 92k","4y 3m","Postpaid Unlimited 25","granted"),
+    C("MST-9982","Chan Sophea","Consumer postpaid",["CRM","Billing","Support"],71,22,34,"₭ 68k","2y 1m","Home Fibre 200","withdrawn"),
+    C("MST-6120","Lim Chanthou","Consumer prepaid",["CRM","Network","Digital"],64,40,44,"₭ 24k","11m","Prepaid Smart 5","granted"),
+    C("MST-7733","Nou Kimhak","Consumer postpaid",["CRM","Billing","Network","Digital"],12,55,80,"₭ 140k","7y 8m","Postpaid Unlimited 40","granted"),
+    C("MST-8041","Sovann Reaksmey","Loyalty",["CRM","Digital","Support"],55,33,58,"₭ 41k","1y 5m","Loyalty tier · Gold","granted"),
+    C("ACC-901234567","Angkor Freight & Logistics","B2B",["CRM","Billing","Network"],22,74,66,"₭ 13.1M","6y 4m","Enterprise Fibre · 3 sites","b2b","K001-901234567"),
+    C("MST-5510","Keo Vibol","Consumer prepaid",["CRM","Network"],48,29,37,"₭ 19k","3y 2m","Prepaid Smart 3","granted"),
+    C("MST-3374","Ros Chanmony","Consumer postpaid",["CRM","Billing","Support","Digital"],67,44,41,"₭ 77k","1y 9m","Postpaid Unlimited 25","granted"),
+    C("MST-2280","Chea Sokha","Consumer postpaid",["CRM","Billing","Network","Digital"],29,51,63,"₭ 84k","5y 1m","Postpaid Unlimited 25","granted"),
+    C("MST-7742","Meng Sreyneang","Consumer prepaid",["CRM","Digital"],58,26,48,"₭ 16k","8m","Prepaid Smart 3","granted"),
+    C("MST-6651","Hout Piseth","Consumer postpaid",["CRM","Billing","Network","Support","Digital"],41,38,55,"₭ 61k","2y 10m","Home Fibre 100","granted"),
+    C("ACC-770180022","Mekong Retail Group","B2B",["CRM","Billing"],18,69,72,"₭ 6.4M","4y 7m","Enterprise Mobile · 90 lines","b2b","K001-770180022"),
+    C("MST-9014","Tep Bopha","Loyalty",["CRM","Digital"],63,31,40,"₭ 33k","1y 1m","Loyalty tier · Silver","withdrawn"),
+    C("MST-4419","Yem Dara","Consumer postpaid",["CRM","Billing","Network"],34,47,58,"₭ 72k","3y 6m","Postpaid Unlimited 25","granted")
+  ];
+  var byId={}; cs.forEach(function(c){ byId[c.id]=c; });
+
+  // seed timelines
+  function tl(id,arr){ byId[id].timeline=arr; }
+  tl("MST-4471",[
+    {at:hoursAgo(20),src:"Digital",ev:"Opened app — viewed data-usage screen"},
+    {at:hoursAgo(40),src:"Support",ev:"Ticket T-88213 raised — slow data around Toul Kork"},
+    {at:hoursAgo(96),src:"Billing",ev:"Payment received — ₭ 92,000 via ABA autopay"},
+    {at:hoursAgo(190),src:"Network",ev:"Usage 80% threshold notification sent"}
+  ]);
+  tl("MST-9982",[
+    {at:hoursAgo(30),src:"Support",ev:"Ticket T-88240 raised — fibre dropouts every evening"},
+    {at:hoursAgo(72),src:"CRM",ev:"Marketing consent withdrawn via app settings"},
+    {at:hoursAgo(260),src:"Billing",ev:"Invoice issued — September cycle"}
+  ]);
+  tl("MST-6120",[
+    {at:hoursAgo(50),src:"Network",ev:"Roaming session — Thailand, 1.2 GB"},
+    {at:hoursAgo(150),src:"Digital",ev:"Top-up ₭ 10,000 in app"}
+  ]);
+  tl("MST-7733",[
+    {at:hoursAgo(6),src:"Digital",ev:"Opened app — checked bill"},
+    {at:hoursAgo(120),src:"Billing",ev:"Auto-renewed Unlimited 40"}
+  ]);
+  tl("MST-8041",[
+    {at:hoursAgo(14),src:"Digital",ev:"Redeemed loyalty points — 2GB data pack"},
+    {at:hoursAgo(210),src:"Support",ev:"Ticket T-88190 resolved — SIM swap"}
+  ]);
+  tl("ACC-901234567",[
+    {at:hoursAgo(28),src:"Billing",ev:"Consolidated invoice issued — 3 sites"},
+    {at:hoursAgo(300),src:"Network",ev:"Bandwidth upgrade — HQ site to 1 Gbps"}
+  ]);
+  tl("MST-3374",[
+    {at:hoursAgo(22),src:"Support",ev:"Ticket T-88251 raised — billing dispute"},
+    {at:hoursAgo(180),src:"Digital",ev:"Push opened — weekend data boost"}
+  ]);
+  tl("MST-2280",[ {at:hoursAgo(48),src:"Network",ev:"5G enabled on device"}, {at:hoursAgo(240),src:"Billing",ev:"Payment received — ₭ 84,000"} ]);
+  tl("MST-7742",[ {at:hoursAgo(70),src:"Digital",ev:"Installed app, completed onboarding"} ]);
+  tl("MST-6651",[ {at:hoursAgo(18),src:"Support",ev:"Ticket T-88248 raised — router replacement"}, {at:hoursAgo(160),src:"Network",ev:"Line test passed"} ]);
+  tl("MST-9014",[ {at:hoursAgo(36),src:"Digital",ev:"Loyalty tier review — held at Silver"} ]);
+  tl("MST-4419",[ {at:hoursAgo(90),src:"Billing",ev:"Payment received — ₭ 72,000"} ]);
+
+  // seed tickets
+  byId["MST-4471"].tickets=[{id:"T-88213",subject:"Slow data around Toul Kork in evenings",status:"Open",opened:hoursAgo(40)}];
+  byId["MST-9982"].tickets=[
+    {id:"T-88240",subject:"Fibre dropouts every evening",status:"Open",opened:hoursAgo(30)},
+    {id:"T-88121",subject:"Late-payment fee query",status:"Resolved",opened:hoursAgo(400)}
+  ];
+  byId["MST-3374"].tickets=[{id:"T-88251",subject:"Billing dispute — charged twice for add-on",status:"Open",opened:hoursAgo(22)}];
+  byId["MST-6651"].tickets=[{id:"T-88248",subject:"Router replacement needed",status:"Open",opened:hoursAgo(18)}];
+  byId["MST-9014"].tickets=[{id:"T-88205",subject:"Points not credited after top-up",status:"Open",opened:hoursAgo(60)}];
+  byId["MST-8041"].tickets=[{id:"T-88190",subject:"SIM swap after lost phone",status:"Resolved",opened:hoursAgo(220)}];
+
+  // seed notes
+  byId["MST-9982"].notes=[{at:hoursAgo(30),by:"You",text:"Third fibre complaint this quarter. Flagged to network ops. Retention risk if not fixed by month-end."}];
+  byId["ACC-901234567"].notes=[{at:hoursAgo(300),by:"Account team",text:"Renewal due Q1. Interested in adding a 4th site (Sihanoukville warehouse)."}];
+
+  // pending identity matches — each attaches a NEW source record to an existing customer
+  var matches=[
+    {id:"M-5001",customerId:"MST-6120",sys:"Billing",label:"Billing · EZECOM",sub:"Prepaid wallet · +855 78 220 118",signals:["name","phone"],score:0.93,state:"pending"},
+    {id:"M-5002",customerId:"MST-8041",sys:"Billing",label:"Billing · Cellcard",sub:"reaksmey@outlook.com · auto top-up",signals:["name","email"],score:0.88,state:"pending"},
+    {id:"M-5003",customerId:"MST-8041",sys:"Network",label:"Network · Cellcard",sub:"+855 96 771 004 · device IMEI match",signals:["phone"],score:0.96,state:"pending"},
+    {id:"M-5004",customerId:"MST-7742",sys:"Network",label:"Network · Cellcard",sub:"+855 12 640 771 · SIM registered",signals:["phone"],score:0.97,state:"pending"},
+    {id:"M-5005",customerId:"MST-7742",sys:"Billing",label:"Billing · Cellcard",sub:"Meng S. · prepaid wallet",signals:["name"],score:0.71,state:"pending"},
+    {id:"M-5006",customerId:"MST-5510",sys:"Billing",label:"Billing · Cellcard",sub:"Keo Vibol · +855 92 118 044",signals:["name","phone"],score:0.90,state:"pending"},
+    {id:"M-5007",customerId:"MST-9014",sys:"Support",label:"Support · Cellcard",sub:"Bopha Tep · 2 prior contacts",signals:["name"],score:0.64,state:"pending"},
+    {id:"M-5008",customerId:"ACC-901234567",sys:"Support",label:"Support · Telcotech",sub:"TIN K001-901234567 · leased-line tickets",signals:["name","tax id"],score:0.99,state:"pending"}
+  ];
+
+  var b2b={
+    name:"Angkor Freight & Logistics Co., Ltd.", tin:"K001-901234567",
+    reg:"Phnom Penh · Sangkat Chak Angre Leu · registered 2016",
+    rels:[
+      {sys:"CRM · Cellcard", rel:"Mobile fleet — 214 postpaid lines", since:"2019", inter:false},
+      {sys:"Billing · EZECOM", rel:"Enterprise fibre — 3 sites, 500 Mbps", since:"2020", inter:false},
+      {sys:"Network · Telcotech", rel:"Leased dark fibre — PNH metro ring", since:"2021", inter:false},
+      {sys:"CRM · Ezesoft", rel:"Billing-platform license (DCT Group entity)", since:"2022", inter:true}
+    ],
+    excludeInter:true
+  };
+
+  var mapDefault={
+    "master_id":"external_ref","full_name":"Name","mobile_e164":"PhoneNumber","email_primary":"Email",
+    "segment":"audience_segment","churn_risk":"custom.churn_score","consent_marketing":"OptInStatus","preferred_language":"Locale"
+  };
+
+  var audiences=[
+    {id:"AUD-01",name:"Postpaid — churn watch",createdAt:hoursAgo(72),
+     rule:{segment:"Consumer postpaid",source:"any",minChurn:55,sortBy:"churn"},
+     memberIds:["MST-9982","MST-3374"],
+     mapping:Object.assign({},mapDefault), syncMode:"live",
+     exports:[{at:hoursAgo(27),records:12480,added:3,removed:1},{at:hoursAgo(51),records:12478,added:6,removed:2}]}
+  ];
+
+  return {
+    v:8,
+    createdAt:Date.now(),
+    customers:cs, matches:matches, b2b:b2b, audiences:audiences,
+    config:{
+      thresholds:{ atRisk:60, autoMerge:0.90, wellReconciled:3, bandMedium:40, bandHigh:60 },
+      scores:{
+        churn:{ base:26, fields:[
+          {key:"open_tickets",weight:15},{key:"idle_30d",weight:16},{key:"renewal_90d",weight:15},
+          {key:"consent_withdrawn",weight:12},{key:"area_complaints",weight:10},{key:"tenure_years",weight:-2.5} ] },
+        engagement:{ base:16, fields:[
+          {key:"app_sessions",weight:4},{key:"push_enabled",weight:12},{key:"autopay",weight:9},{key:"active_7d",weight:12} ] },
+        upsell:{ base:22, fields:[
+          {key:"over_plan_usage",weight:20},{key:"engagement_high",weight:16},{key:"tenure_years",weight:3},
+          {key:"not_top_tier",weight:14},{key:"low_arpu",weight:-8} ] }
+      },
+      dq:{ base:58, perSource:8 },
+      match:{ base:0.20, name:0.34, phone:0.40, email:0.34, taxId:0.55 }
+    },
+    activity:[
+      {at:hoursAgo(2),kind:"note",text:"You added a note to Chan Sophea",cust:"MST-9982"},
+      {at:hoursAgo(5),kind:"export",text:"Audience “Postpaid — churn watch” exported — 12,480 records"},
+      {at:hoursAgo(26),kind:"merge",text:"Merged a Digital record into Hout Piseth",cust:"MST-6651"},
+      {at:hoursAgo(48),kind:"offer",text:"Win-back offer sent to Ros Chanmony",cust:"MST-3374"}
+    ],
+    feedback:[],
+    ui:{ theme:"system", lastCustomerId:"MST-4471", lastView:"home", opCustomerId:"MST-4471", syncAudienceId:"AUD-01" }
+  };
+}
+
+/* ======================================================= store */
+var STORE=(function(){
+  var KEY="c360proto";
+  var subs=[]; var state;
+  function load(){
+    try{ var s=JSON.parse(localStorage.getItem(KEY)); if(s && s.v===8) return s; }catch(e){}
+    return seed();
+  }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
+  state=load();
+  return {
+    get:function(){ return state; },
+    cust:function(id){ return state.customers.find(function(c){return c.id===id;}); },
+    update:function(fn){ fn(state); save(); subs.forEach(function(f){f();}); },
+    quiet:function(fn){ fn(state); save(); },
+    subscribe:function(fn){ subs.push(fn); },
+    log:function(kind,text,cust){ state.activity.unshift({at:Date.now(),kind:kind,text:text,cust:cust||null}); state.activity=state.activity.slice(0,80); },
+    reset:function(){ try{localStorage.removeItem(KEY);}catch(e){} state=seed(); save(); subs.forEach(function(f){f();}); }
+  };
+})();
+
+/* ======================================================= derived */
+function pendingFor(id){ return STORE.get().matches.filter(function(m){return m.customerId===id && m.state==="pending";}); }
+function pendingCount(){ return STORE.get().matches.filter(function(m){return m.state==="pending";}).length; }
+function reconCount(c){ return c.sources.length; }
+function isProvisional(c){ return pendingFor(c.id).length>0; }
+
+/* ======================================================= modal */
+function modal(opts){
+  var host=$("#modalHost");
+  var ov=elh('<div class="modal-ov"><div class="modal" role="dialog" aria-modal="true">'+
+    '<h3>'+esc(opts.title)+'</h3>'+
+    '<div class="mbody">'+opts.body+'</div>'+
+    '<div class="mfoot">'+
+      '<button class="btn" data-x="cancel" type="button">'+esc(opts.cancelLabel||"Cancel")+'</button>'+
+      (opts.submitLabel?'<button class="btn primary" data-x="ok" type="button">'+esc(opts.submitLabel)+'</button>':'')+
+    '</div></div></div>');
+  host.appendChild(ov);
+  function close(){ ov.remove(); }
+  ov.addEventListener("click",function(e){ if(e.target===ov) close(); });
+  ov.querySelector('[data-x="cancel"]').addEventListener("click",close);
+  var ok=ov.querySelector('[data-x="ok"]');
+  if(ok) ok.addEventListener("click",function(){ if(opts.onSubmit && opts.onSubmit(ov)===false) return; close(); });
+  document.addEventListener("keydown",function esc2(e){ if(e.key==="Escape"){ close(); document.removeEventListener("keydown",esc2); } });
+  if(opts.onOpen) opts.onOpen(ov);
+  var f=ov.querySelector("input,textarea,select"); if(f) f.focus();
+  return {close:close,root:ov};
+}
+
+/* ======================================================= sparkline */
+function sparkSVG(data,h){
+  h=h||60; var w=280,pad=4;
+  var mn=Math.min.apply(null,data),mx=Math.max.apply(null,data),rng=(mx-mn)||1;
+  var pts=data.map(function(d,i){ return [pad+i*((w-2*pad)/(data.length-1)), h-pad-((d-mn)/rng)*(h-2*pad)]; });
+  var line=pts.map(function(p,i){return (i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1);}).join(" ");
+  var area=line+" L "+(w-pad)+" "+(h-pad)+" L "+pad+" "+(h-pad)+" Z";
+  return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="trend">'+
+    '<path d="'+area+'" fill="var(--accent-soft)"></path>'+
+    '<path d="'+line+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>'+
+    '<circle cx="'+pts[pts.length-1][0].toFixed(1)+'" cy="'+pts[pts.length-1][1].toFixed(1)+'" r="2.6" fill="var(--accent)"></circle></svg>';
+}
+/* distinct, realistic usage series per range — daily / weekly / monthly, different shapes */
+function usageSeries(c, range){
+  var daily=c.spark.reduce(function(a,b){return a+b;},0)/c.spark.length;   // ~GB per day
+  var sd=c.id.charCodeAt(4)+c.id.charCodeAt(5)*3+c.id.charCodeAt(6)*7;
+  function wob(i,amp){ return (Math.sin(sd*0.13 + i*1.15)*0.55 + Math.sin(sd*0.31 + i*0.47)*0.45) * amp; }
+  var arr=[], n, unit, note, trend;
+  if(range==="30d"){ n=30; unit="GB / day"; note="Last 30 days · daily";
+    for(var i=0;i<n;i++) arr.push(Math.max(0.3, +(daily + wob(i, daily*0.4) - (i-15)*0.006*daily).toFixed(2))); }
+  else if(range==="90d"){ n=13; unit="GB / week"; note="Last 90 days · weekly";
+    for(var j=0;j<n;j++) arr.push(Math.max(2, +(daily*7*(0.92+j*0.012) + wob(j, daily*2.2)).toFixed(1))); }
+  else { n=12; unit="GB / month"; note="Last 12 months · monthly";
+    for(var k=0;k<n;k++) arr.push(Math.max(6, Math.round(daily*30*(0.62+k*0.035) + wob(k, daily*7)))); }
+  var avg=arr.reduce(function(a,b){return a+b;},0)/arr.length;
+  return { data:arr, unit:unit, note:note, avg:avg, peak:Math.max.apply(null,arr),
+    delta: arr[arr.length-1]-arr[0] };
+}
+function fmtGB(v){ return v>=100 ? Math.round(v) : v>=10 ? v.toFixed(1) : v.toFixed(2); }
+
+/* ======================================================= NAV / router */
+var ICONS={
+  home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+  flow:'<rect x="3" y="4" width="7" height="6" rx="1"/><rect x="14" y="14" width="7" height="6" rx="1"/><path d="M6.5 10v4h11v0"/>',
+  rules:'<path d="M4 6h11M4 12h16M4 18h8"/><circle cx="18" cy="6" r="2.2"/><circle cx="9" cy="12" r="2.2" fill="var(--surface)"/><circle cx="15" cy="18" r="2.2"/>',
+  identity:'<circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M8.2 7.1l7.6 3.7M8.2 16.9l7.6-3.7"/>',
+  c360:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-5.6 7-5.6s7 2 7 5.6"/>',
+  operator:'<line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="9" cy="8" r="2.3"/><circle cx="15" cy="16" r="2.3"/>',
+  listsync:'<path d="M4 11a8 8 0 0 1 13.5-5.5L20 8"/><path d="M20 8V3.5"/><path d="M20 13a8 8 0 0 1-13.5 5.5L4 16"/><path d="M4 16v4.5"/>',
+  source:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
+  merge2:'<path d="M7 4v5a4 4 0 0 0 4 4h6M7 20v-5"/><path d="M14 10l3 3-3 3"/>',
+  spark:'<path d="M4 18l4-6 4 3 5-8 3 4"/>',
+  target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+  send:'<path d="M4 12l16-7-7 16-2-7-7-2z"/>'
+};
+var FEED_IC={
+  merge:'<path d="M8 6H4v4M20 18h-4v-4"/><path d="M4 10c0 8 16 0 16 8"/>',
+  reject:'<path d="M6 6l12 12M18 6L6 18"/>',
+  note:'<path d="M4 20h4L20 8l-4-4L4 16z"/>',
+  ticket:'<path d="M4 9V6h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/>',
+  offer:'<path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/>',
+  audience:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+  export:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',
+  consent:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+  feedback:'<path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/>'
+};
+
+var NAV=[
+  {id:"home",     title:"Home",                persona:"Your day at a glance"},
+  {id:"flow",     title:"How it works",        persona:"The goal, the impact, the end-to-end flow — the management demo"},
+  {id:"identity", title:"Identity resolution", persona:"Data steward · match review queue"},
+  {id:"c360",     title:"Customer 360",        persona:"Merged customer view"},
+  {id:"operator", title:"Operator console",    persona:"Campaign operations"},
+  {id:"listsync", title:"List sync",           persona:"Marketing ops · campaign-tool integration"},
+  {id:"rules",    title:"Rules & scoring",     persona:"Business-owned logic — configure it here, export a build spec for engineering"}
+];
+var VIEWS={};
+var active="home";
+var UI={ dir_q:"", op_q:"", op_source:"all", id_filter:"all", c360_range:"30d", opPrefill:null, rules_c:null, bl:{seg:"all",src:"any",sort:"churn",minChurn:0,picked:{}} };
+
+function go(id,opt){
+  opt=opt||{};
+  active=id;
+  STORE.quiet(function(s){ s.ui.lastView=id; });
+  document.querySelectorAll(".nav-btn").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.id===id?"true":"false"); });
+  var n=NAV.find(function(x){return x.id===id;});
+  $("#tbTitle").textContent=n.title;
+  $("#tbPersona").textContent=n.persona;
+  render();
+  if(!opt.keepScroll) window.scrollTo(0,0);
+}
+function openCustomer(cid){ STORE.quiet(function(s){ s.ui.lastCustomerId=cid; }); go("c360"); }
+
+function render(){
+  recompute();
+  $("#view").innerHTML="";
+  $("#view").appendChild(VIEWS[active]());
+  var pc=pendingCount();
+  document.querySelectorAll('.nav-btn[data-id="identity"] .navbadge').forEach(function(el){
+    el.textContent=pc; el.style.display=pc?"":"none";
+  });
+  renderTourDock();
+  applyTourHighlight();
+}
+
+function buildNav(){
+  function set(host,mobile){
+    host.innerHTML="";
+    NAV.forEach(function(n){
+      var badge = n.id==="identity" ? '<span class="navbadge"></span>' : '';
+      var b=elh('<button class="nav-btn" role="tab" type="button" data-id="'+n.id+'" aria-selected="'+(n.id===active?"true":"false")+'">'+
+        (mobile?'':'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+ICONS[n.id]+'</svg>')+
+        '<span>'+esc(n.title)+'</span>'+badge+'</button>');
+      b.addEventListener("click",function(){ if(TOUR) endTour(false); go(n.id); });
+      host.appendChild(b);
+    });
+  }
+  set($("#sideNav"),false); set($("#mobileNav"),true);
+}
+
+/* ======================================================= shared bits */
+function custRow(c,onClick,current){
+  var b=elh('<button class="pickitem" type="button" aria-current="'+(current?"true":"false")+'">'+
+    '<span style="display:flex;gap:10px;align-items:center;min-width:0">'+
+      '<span class="avatar">'+esc(initials(c.name))+'</span>'+
+      '<span style="min-width:0"><span style="display:block;font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(c.name)+'</span>'+
+      '<span class="t-sub mono">'+esc(c.id)+' &middot; '+esc(c.segment)+'</span></span></span>'+
+    '<span class="chips">'+
+      (c.churn>=CHURN_RISK?pill("bad","risk"):"")+
+      (isProvisional(c)?pill("warn","provisional"):"")+
+    '</span></button>');
+  b.addEventListener("click",onClick);
+  return b;
+}
+var SCORE_ACTION={
+  "Churn risk":       { fill:function(v){var t=churnTone(v);return t==="bad"?"var(--bad-dot)":t==="warn"?"var(--warn-dot)":"var(--good-dot)";}, pillCls:function(v){return churnTone(v);},
+     cta:function(v){return v>=CHURN_RISK?"Work retention — send a win-back offer":"Low risk — keep an eye on it";}, kind:"winback" },
+  "Upsell propensity":{ fill:function(){return "var(--pop)";}, pillCls:function(){return "pop";},
+     cta:function(v){return v>=BANDS().med?"Pitch the next plan tier or an add-on":"Not ready — nurture first";}, kind:"upsell" },
+  "Engagement":       { fill:function(){return "var(--info-dot)";}, pillCls:function(){return "info";},
+     cta:function(v){return v>=BANDS().high?"Highly engaged — add to a loyalty / referral audience":"Re-engage — add to a nurture audience";}, kind:"nurture" }
+};
+function scoreActNode(label, val, cust){
+  var A=SCORE_ACTION[label];
+  var n=elh('<button class="scoreact" type="button">'+
+    '<div class="eyebrow">'+label+'</div>'+
+    '<div class="k num">'+val+'<span style="font-size:13px;color:var(--ink-3)"> / 100</span></div>'+
+    '<div class="track"><i style="width:'+val+'%;background:'+A.fill(val)+'"></i></div>'+
+    '<div>'+pill(A.pillCls(val), band(val))+'</div>'+
+    '<div class="cta">'+esc(A.cta(val))+' &rarr;</div></button>');
+  n.addEventListener("click",function(){ actNext(cust.id, A.kind); });
+  return n;
+}
+function actNext(cid, kind){
+  STORE.quiet(function(st){ st.ui.opCustomerId=cid; });
+  UI.opPrefill=kind;
+  go("operator");
+}
+
+/* ======================================================= VIEW: HOME */
+VIEWS.home=function(){
+  var s=STORE.get();
+  var atRisk=s.customers.filter(function(c){return c.churn>=CHURN_RISK;}).length;
+  var openTickets=s.customers.reduce(function(a,c){return a+c.tickets.filter(function(t){return t.status==="Open";}).length;},0);
+  var exportsToday=0;
+  s.audiences.forEach(function(a){ a.exports.forEach(function(e){ if(Date.now()-e.at<24*3600000) exportsToday++; }); });
+  var last=STORE.cust(s.ui.lastCustomerId);
+
+  var hi=(new Date().getHours()<12)?"Good morning":(new Date().getHours()<18?"Good afternoon":"Good evening");
+  var wrap=elh('<div class="panel"></div>');
+
+  wrap.appendChild(elh('<div class="card"><div class="card-body hrow">'+
+    '<div><div style="font-size:16px;font-weight:600">'+hi+'</div>'+
+    '<div class="muted" style="font-size:12.5px">'+new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})+
+    ' &middot; you have <b>'+pendingCount()+'</b> matches to review and <b>'+openTickets+'</b> open tickets across your book.</div></div>'+
+    '<div class="btn-row"><button class="btn" id="homeTour" type="button">&#9654;&nbsp; Take the tour</button>'+
+    (last?'<button class="btn" id="homeResume" type="button">Open '+esc(last.name)+' &rarr;</button>':'')+'</div>'+
+    '</div></div>'));
+
+  var tiles=elh('<div class="grid g4" id="homeTiles"></div>');
+  [
+    ["Matches to review",pendingCount(),"in the steward queue","identity"],
+    ["Customers at risk",atRisk,"churn score ≥ "+CHURN_RISK,"operator"],
+    ["Saved audiences",s.audiences.length,"ready to sync","listsync"],
+    ["Exports (24h)",exportsToday,"pushed to campaign tool","listsync"]
+  ].forEach(function(t){
+    var b=elh('<button class="metric" type="button"><div class="eyebrow">'+t[0]+'</div>'+
+      '<div class="k num">'+t[1]+'</div><div class="note">'+t[2]+'</div></button>');
+    b.addEventListener("click",function(){ go(t[3]); });
+    tiles.appendChild(b);
+  });
+  wrap.appendChild(tiles);
+
+  // beyond CRM + CVM
+  var bc=elh('<div class="card"><div class="card-head"><div><h2>Beyond CRM + CVM</h2><p>The capabilities that make this worth running</p></div>'+
+    '<button class="btn sm" id="homeDiff" type="button">See the full picture &rarr;</button></div>'+
+    '<div class="card-body grid g3" style="gap:12px">'+
+    [["Cross-source identity merge","Deterministic + probabilistic matching with a review queue — a CRM keeps one system of record, a CVM assumes clean input."],
+     ["Predictive scores per customer","Churn, upsell and engagement on every unified profile, nightly — not buried in a campaign tool."],
+     ["Live, re-queryable segments","Audiences update themselves on every merge and score change and push to the campaign tool in real time."]]
+     .map(function(x){return '<div style="border:1px solid var(--border);border-radius:9px;padding:12px;background:var(--surface-2)">'+
+       '<div class="adv-tag" style="margin-bottom:7px">Only here</div>'+
+       '<div style="font-weight:600;font-size:12px">'+esc(x[0])+'</div>'+
+       '<div style="font-size:11.5px;color:var(--ink-2);margin-top:4px;line-height:1.5">'+esc(x[1])+'</div></div>';}).join("")+
+    '</div></div>');
+  bc.querySelector("#homeDiff").addEventListener("click",function(){ go("flow"); });
+  wrap.appendChild(bc);
+
+  var cols=elh('<div class="grid g2"></div>');
+
+  // recent activity
+  var act=elh('<div class="card"><div class="card-head"><div><h2>Recent activity</h2><p>Everything you and the team have done</p></div></div><div class="card-body"><div class="feed" id="homeFeed"></div></div></div>');
+  var feed=act.querySelector("#homeFeed");
+  s.activity.slice(0,9).forEach(function(a){
+    var r=elh('<div class="feed-row"><span class="feed-ic"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">'+(FEED_IC[a.kind]||FEED_IC.note)+'</svg></span>'+
+      '<span style="flex:1">'+esc(a.text)+
+      (a.cust?' &middot; <button class="rowlink" data-c="'+a.cust+'">view</button>':'')+
+      '<div class="feed-tt">'+rel(a.at)+'</div></span></div>');
+    var lk=r.querySelector(".rowlink"); if(lk) lk.addEventListener("click",function(){ openCustomer(a.cust); });
+    feed.appendChild(r);
+  });
+  if(!s.activity.length) feed.appendChild(elh('<div class="empty">Nothing yet — start working the queue.</div>'));
+  cols.appendChild(act);
+
+  // needs attention
+  var na=elh('<div class="card"><div class="card-head"><div><h2>Needs attention</h2><p>High-confidence matches and open tickets</p></div></div><div class="card-body" style="display:flex;flex-direction:column;gap:14px"></div></div>');
+  var nb=na.querySelector(".card-body");
+  var topM=s.matches.filter(function(m){return m.state==="pending" && m.score>=AUTO;}).slice(0,3);
+  if(topM.length){
+    nb.appendChild(elh('<div class="eyebrow">Auto-merge ready</div>'));
+    topM.forEach(function(m){
+      var c=STORE.cust(m.customerId);
+      var row=elh('<div class="hrow" style="font-size:12.5px"><span>'+esc(c.name)+' <span class="muted">&mdash; '+esc(m.label)+'</span> <span class="num" style="color:var(--good-fg);font-weight:600">'+m.score.toFixed(2)+'</span></span>'+
+        '<button class="btn sm primary" data-m="'+m.id+'" type="button">Confirm</button></div>');
+      row.querySelector("button").addEventListener("click",function(){ confirmMatch(m.id); });
+      nb.appendChild(row);
+    });
+  }
+  var tix=[];
+  s.customers.forEach(function(c){ c.tickets.forEach(function(t){ if(t.status==="Open") tix.push({c:c,t:t}); }); });
+  tix=tix.slice(0,4);
+  if(tix.length){
+    nb.appendChild(elh('<div class="eyebrow" style="margin-top:4px">Open tickets</div>'));
+    tix.forEach(function(x){
+      var row=elh('<div class="hrow" style="font-size:12.5px"><span>'+esc(x.t.subject)+' <span class="muted mono">&middot; '+esc(x.c.name)+'</span></span>'+
+        '<button class="rowlink" data-c="'+x.c.id+'" type="button">open &rarr;</button></div>');
+      row.querySelector("button").addEventListener("click",function(){ openCustomer(x.c.id); });
+      nb.appendChild(row);
+    });
+  }
+  if(!topM.length && !tix.length) nb.appendChild(elh('<div class="empty">All clear. Nice.</div>'));
+  cols.appendChild(na);
+  wrap.appendChild(cols);
+
+  // feedback collected
+  if(s.feedback.length){
+    var fb=elh('<div class="card"><div class="card-head"><div><h2>Feedback collected ('+s.feedback.length+')</h2><p>From this test session, saved in the browser</p></div>'+
+      '<div class="btn-row"><button class="btn sm" id="fbCopy" type="button">Copy all (JSON)</button></div></div>'+
+      '<div class="card-body"><div class="list" id="fbList"></div></div></div>');
+    var fl=fb.querySelector("#fbList");
+    s.feedback.slice().reverse().forEach(function(f){
+      fl.appendChild(elh('<div class="li"><div class="hrow"><b>'+esc(f.screen)+'</b><span class="mini">'+"★".repeat(f.rating)+"☆".repeat(5-f.rating)+' &middot; '+rel(f.at)+(f.author?' &middot; '+esc(f.author):'')+'</span></div>'+
+        '<div style="margin-top:4px">'+esc(f.text)+'</div></div>'));
+    });
+    fb.querySelector("#fbCopy").addEventListener("click",function(){
+      var txt=JSON.stringify(s.feedback,null,2);
+      navigator.clipboard && navigator.clipboard.writeText(txt);
+      toast("Feedback copied to clipboard");
+    });
+    wrap.appendChild(fb);
+  }
+
+  var r=wrap.querySelector("#homeResume");
+  if(r) r.addEventListener("click",function(){ openCustomer(s.ui.lastCustomerId); });
+  wrap.querySelector("#homeTour").addEventListener("click",function(){ startTour("identity"); });
+  return wrap;
+};
+
+/* ======================================================= match actions */
+function confirmMatch(mid){
+  STORE.update(function(s){
+    var m=s.matches.find(function(x){return x.id===mid;}); if(!m||m.state!=="pending") return;
+    m.state="confirmed";
+    var c=s.customers.find(function(x){return x.id===m.customerId;});
+    if(c && c.sources.indexOf(m.sys)<0) c.sources.push(m.sys);
+    if(c) c.timeline.unshift({at:Date.now(),src:m.sys,ev:"Record merged from "+m.label+" ("+m.signals.join(", ")+" match, "+m.score.toFixed(2)+")"});
+    STORE.log("merge","Merged a "+m.sys+" record into "+(c?c.name:m.customerId)+" — now "+(c?c.sources.length:"?")+" of 5 systems",m.customerId);
+  });
+  var c=STORE.cust((STORE.get().matches.find(function(x){return x.id===mid;})||{}).customerId);
+  toast("Merged — "+(c?c.name+" now has "+c.sources.length+" of 5 systems":"record merged"));
+}
+function setMatch(mid,state){
+  STORE.update(function(s){
+    var m=s.matches.find(function(x){return x.id===mid;}); if(!m) return;
+    m.state=state;
+    if(state==="rejected"){ var c=s.customers.find(function(x){return x.id===m.customerId;}); STORE.log("reject","Rejected a candidate "+m.sys+" record for "+(c?c.name:m.customerId),m.customerId); }
+  });
+}
+function nudgeMatch(mid,d){
+  STORE.update(function(s){
+    var m=s.matches.find(function(x){return x.id===mid;}); if(!m||m.state!=="pending") return;
+    m.score=Math.max(0.50,Math.min(0.99,Math.round((m.score+d)*100)/100));
+  });
+}
+
+/* ======================================================= VIEW: IDENTITY */
+VIEWS.identity=function(){
+  var s=STORE.get();
+  var wrap=elh('<div class="panel"></div>');
+  wrap.appendChild(elh('<div class="panel-head"><p>Review candidate records that may belong to a customer already on file. Confirm a match to merge that source system into the customer’s profile; anything at or above '+AUTO.toFixed(2)+' can be released in bulk.</p></div>'));
+
+  var pend=s.matches.filter(function(m){return m.state==="pending";}).length;
+  var merged=s.matches.filter(function(m){return m.state==="confirmed";}).length;
+  var autoN=s.matches.filter(function(m){return m.state==="pending" && m.score>=AUTO;}).length;
+  var k=elh('<div class="grid g3"></div>');
+  [["Pending review",pend,s.matches.length+" in queue"],["Merged this session",merged,"written to customer profiles"],["Auto-merge eligible",autoN,"pending · score ≥ "+AUTO.toFixed(2)]]
+    .forEach(function(t){ k.appendChild(elh('<div class="metric"><div class="eyebrow">'+t[0]+'</div><div class="k num">'+t[1]+'</div><div class="note">'+t[2]+'</div></div>')); });
+  wrap.appendChild(k);
+
+  var card=elh('<div class="card" id="idQueueCard"><div class="card-head"><div><h2>Match review queue <span class="adv-tag">Deterministic + probabilistic</span></h2><p>Adjust the confidence score with − / + before deciding</p></div>'+
+    '<div class="btn-row" id="idFilters"></div></div>'+
+    '<div class="twrap"><table class="tbl"><thead><tr><th>Match</th><th>Customer &amp; candidate record</th><th>Signals</th><th>Confidence</th><th>Decision</th></tr></thead><tbody></tbody></table></div>'+
+    '<div class="foot-row"><span class="note" id="idCount"></span><button class="btn primary" id="idAuto" type="button">Confirm all auto-merge ('+autoN+')</button></div></div>');
+  var filters=card.querySelector("#idFilters");
+  [["all","All"],["pending","Pending"],["confirmed","Merged"],["rejected","Rejected"]].forEach(function(f){
+    var b=elh('<button class="btn sm" type="button" data-f="'+f[0]+'"'+(UI.id_filter===f[0]?' style="background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)"':'')+'>'+f[1]+'</button>');
+    b.addEventListener("click",function(){ UI.id_filter=f[0]; render(); });
+    filters.appendChild(b);
+  });
+
+  var tb=card.querySelector("tbody");
+  var rows=s.matches.filter(function(m){ return UI.id_filter==="all" || m.state===UI.id_filter; });
+  card.querySelector("#idCount").textContent=rows.length+" of "+s.matches.length+" matches";
+  if(!rows.length) tb.appendChild(elh('<tr><td colspan="5"><div class="empty">Nothing here.</div></td></tr>'));
+  rows.forEach(function(m){
+    var c=STORE.cust(m.customerId);
+    var done=m.state!=="pending";
+    var cTone=m.score>=AUTO?"var(--good-fg)":m.score<0.75?"var(--warn-fg)":"var(--ink-2)";
+    var bTone=m.score>=AUTO?"var(--good-dot)":m.score<0.75?"var(--warn-dot)":"var(--accent)";
+    var tr=elh('<tr'+(m.state==="rejected"?' style="opacity:.5"':'')+'>'+
+      '<td class="mono t-sub" style="vertical-align:top">'+m.id+'</td>'+
+      '<td><button class="rowlink" data-open="'+c.id+'" style="font-size:13px">'+esc(c.name)+'</button>'+
+        '<div class="t-sub">has '+c.sources.length+' of 5 systems</div>'+
+        '<div style="margin-top:5px;font-size:12px"><span class="pill mut" style="padding:2px 7px">'+esc(m.label)+'</span> <span class="muted">'+esc(m.sub)+'</span></div></td>'+
+      '<td>'+m.signals.map(function(x){return '<span class="pill '+(x==="name"?"mut":"info")+'" style="margin:1px 2px 1px 0">'+esc(x)+'</span>';}).join("")+'</td>'+
+      '<td style="min-width:130px"><div class="num" style="font-size:15px;font-weight:600;color:'+cTone+'">'+m.score.toFixed(2)+(m.score>=AUTO?' <span style="font-size:9.5px;letter-spacing:.05em">AUTO</span>':'')+'</div>'+
+        '<div class="track" style="margin:5px 0"><i style="width:'+Math.round(m.score*100)+'%;background:'+bTone+'"></i></div>'+
+        (done?'':'<div class="stepper"><button class="btn" data-step="-1" type="button" aria-label="lower">−</button><button class="btn" data-step="1" type="button" aria-label="raise">+</button></div>')+'</td>'+
+      '<td style="min-width:150px">'+(done
+        ? '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">'+pill(m.state==="confirmed"?"good":m.state==="rejected"?"bad":"warn",m.state==="confirmed"?"merged":m.state)+'<button class="rowlink" data-undo="1" type="button" style="font-size:11px">undo</button></div>'
+        : '<div style="display:flex;flex-direction:column;gap:5px"><button class="btn primary" data-act="confirmed" type="button">Confirm merge</button><div class="btn-row"><button class="btn sm" data-act="review" type="button">Review</button><button class="btn sm" data-act="rejected" type="button">Reject</button></div></div>')+'</td>');
+    tr.querySelector('[data-open]').addEventListener("click",function(){ openCustomer(c.id); });
+    tr.querySelectorAll("[data-step]").forEach(function(b){ b.addEventListener("click",function(){ nudgeMatch(m.id, +b.dataset.step*0.01); }); });
+    tr.querySelectorAll("[data-act]").forEach(function(b){ b.addEventListener("click",function(){
+      if(b.dataset.act==="confirmed") confirmMatch(m.id); else setMatch(m.id,b.dataset.act);
+    }); });
+    var u=tr.querySelector("[data-undo]"); if(u) u.addEventListener("click",function(){ setMatch(m.id,"pending"); });
+    tb.appendChild(tr);
+  });
+  card.querySelector("#idAuto").addEventListener("click",function(){
+    var n=0; STORE.update(function(st){ st.matches.forEach(function(m){ if(m.state==="pending"&&m.score>=AUTO){ m.state="confirmed"; n++;
+      var c=st.customers.find(function(x){return x.id===m.customerId;});
+      if(c && c.sources.indexOf(m.sys)<0) c.sources.push(m.sys);
+      if(c) c.timeline.unshift({at:Date.now(),src:m.sys,ev:"Record merged from "+m.label+" (bulk auto-merge)"});
+    }}); if(n) STORE.log("merge",n+" record"+(n>1?"s":"")+" bulk-merged via auto-merge"); });
+    toast(n?(n+" match"+(n>1?"es":"")+" merged"):"No pending matches ≥ "+AUTO.toFixed(2));
+  });
+  wrap.appendChild(card);
+
+  // B2B
+  var b=s.b2b;
+  var bc=elh('<div class="card" id="idB2bCard"><div class="card-head"><div><h2>Business account &mdash; tax-ID anchored <span class="adv-tag">Not in CRM / CVM</span></h2><p>One account keyed on the registered tax ID, across every billing platform</p></div>'+
+    '<div style="text-align:right">'+pill("info","TIN "+b.tin)+'<div class="t-sub" style="margin-top:3px">Cambodia TIN &middot; verified</div></div></div>'+
+    '<div class="card-body" style="display:flex;flex-direction:column;gap:14px">'+
+    '<div><div style="font-size:15px;font-weight:600">'+esc(b.name)+'</div><div class="t-sub">'+esc(b.reg)+'</div></div>'+
+    '<div class="twrap"><table class="tbl"><thead><tr><th>Source system</th><th>Relationship</th><th>Since</th><th>Cross-sell</th></tr></thead><tbody></tbody></table></div>'+
+    '<div class="warnnote" id="interNote"></div>'+
+    '<div class="btn-row"><button class="btn" id="interBtn" type="button">Toggle intercompany exclusion</button></div></div></div>');
+  var rt=bc.querySelector("tbody");
+  b.rels.forEach(function(r){
+    var ex=r.inter && b.excludeInter;
+    rt.appendChild(elh('<tr><td>'+esc(r.sys)+(r.inter?' '+pill("warn","intercompany"):'')+'</td><td>'+esc(r.rel)+'</td><td class="mono">'+esc(r.since)+'</td><td>'+(ex?pill("bad","excluded"):pill("good","eligible"))+'</td></tr>'));
+  });
+  bc.querySelector("#interNote").textContent=b.excludeInter
+    ? "The Ezesoft relationship is an intercompany link to another DCT Group entity — excluded from cross-sell and win-back lists to avoid intra-group targeting."
+    : "Intercompany exclusion is OFF — every relationship is treated as an external customer for cross-sell.";
+  bc.querySelector("#interBtn").addEventListener("click",function(){ STORE.update(function(st){ st.b2b.excludeInter=!st.b2b.excludeInter; }); });
+  wrap.appendChild(bc);
+  return wrap;
+};
+
+/* ======================================================= VIEW: CUSTOMER 360 */
+VIEWS.c360=function(){
+  var s=STORE.get();
+  var wrap=elh('<div class="split"></div>');
+
+  // directory
+  var side=elh('<div class="col-side"><div class="card"><div class="card-head"><div><h2>Directory</h2><p id="dirCount"></p></div></div>'+
+    '<div class="card-body" style="padding:12px"><input type="search" id="dirSearch" placeholder="Search name or ID…" style="width:100%;margin-bottom:10px" value="'+esc(UI.dir_q)+'"><div class="picklist" id="dirList"></div></div></div></div>');
+  function fillDir(){
+    var q=UI.dir_q.toLowerCase();
+    var list=s.customers.filter(function(c){ return !q || c.name.toLowerCase().indexOf(q)>=0 || c.id.toLowerCase().indexOf(q)>=0; });
+    side.querySelector("#dirCount").textContent=list.length+" of "+s.customers.length+" customers";
+    var host=side.querySelector("#dirList"); host.innerHTML="";
+    if(!list.length){ host.appendChild(elh('<div class="empty">No match.</div>')); return; }
+    list.forEach(function(c){
+      host.appendChild(custRow(c,function(){ STORE.quiet(function(st){ st.ui.lastCustomerId=c.id; }); render(); }, c.id===s.ui.lastCustomerId));
+    });
+  }
+  fillDir();
+  side.querySelector("#dirSearch").addEventListener("input",function(e){ UI.dir_q=e.target.value; fillDir(); });
+  wrap.appendChild(side);
+
+  // detail
+  var c=STORE.cust(s.ui.lastCustomerId)||s.customers[0];
+  var main=elh('<div class="col-main" style="display:flex;flex-direction:column;gap:18px"></div>');
+
+  var prov=isProvisional(c);
+  var head=elh('<div class="card"><div class="card-body">'+
+    '<div class="hrow"><div style="display:flex;gap:12px;align-items:center">'+
+      '<span class="avatar br" style="width:44px;height:44px;font-size:14px">'+esc(initials(c.name))+'</span>'+
+      '<div><div style="font-size:17px;font-weight:600">'+esc(c.name)+'</div>'+
+      '<div class="t-sub mono">'+esc(c.id)+'</div>'+
+      (c.tin?'<div style="margin-top:4px">'+pill("info","TIN "+c.tin)+'</div>':'')+'</div></div>'+
+      '<div class="chips">'+pill("mut",c.segment)+pill(churnTone(c.churn),c.churn+" churn")+
+      '<button class="btn sm" id="toOp" type="button">Open in operator console</button></div></div>'+
+    '<div id="c360Recon" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">'+
+      '<div class="hrow"><div class="eyebrow">Reconciliation</div><span class="adv-tag">Cross-source merge</span></div>'+
+      '<div style="font-size:12.5px;margin:5px 0">Data merged from <b>'+c.sources.length+' of 5</b> source systems.</div>'+
+      '<div class="chips">'+SYSTEMS.map(function(sy){ var has=c.sources.indexOf(sy)>=0; return '<span class="pill '+(has?"info":"mut")+'" style="opacity:'+(has?1:.55)+'">'+(has?'':'— ')+esc(sy)+'</span>'; }).join("")+'</div>'+
+      (prov?'<div class="warnnote" style="margin-top:10px">Identity fields are <b>provisional</b> — '+pendingFor(c.id).length+' candidate record(s) still pending in <button class="rowlink" id="toId" type="button">Identity resolution</button>.</div>':'')+
+    '</div></div></div>');
+  head.querySelector("#toOp").addEventListener("click",function(){ STORE.quiet(function(st){st.ui.opCustomerId=c.id;}); go("operator"); });
+  var ti=head.querySelector("#toId"); if(ti) ti.addEventListener("click",function(){ go("identity"); });
+  main.appendChild(head);
+
+  // sources grid — actual system + OpCo
+  var dayAvg=(c.spark.reduce(function(a,b){return a+b;},0)/c.spark.length);
+  var srcData={
+    CRM:[["Segment",c.segment],["Customer since","joined "+c.tenure+" ago"],["Consent",c.consent==="granted"?"Marketing: granted":c.consent==="withdrawn"?"Marketing: withdrawn":"B2B agreement"],["Home area",c.cell]],
+    Billing:[["Plan",c.plan],["ARPU",c.arpu+" / mo"],["Balance","Current"],["Payment","ABA autopay"]],
+    Network:[["This cycle",Math.round(dayAvg*30)+" GB"],["Daily average",dayAvg.toFixed(1)+" GB"],["Home cell",c.cell],["Radio","4G / 5G"]],
+    Support:[["Open tickets",String(c.tickets.filter(function(t){return t.status==="Open";}).length)],["Tickets (12 mo)",String(c.tickets.length)],["Last contact",c.timeline.length?rel(c.timeline[0].at):"—"]],
+    Digital:[["Client","MyCellcard v6.2"],["Last opened",c.timeline.length?rel(c.timeline[0].at):"—"],["Push",c.consent==="withdrawn"?"Disabled":"Enabled"]]
+  };
+  var scard=elh('<div class="card"><div class="card-head"><div><h2>Profile by source</h2><p>Only the systems this customer is present in &mdash; system &middot; operating company</p></div></div><div class="card-body"><div class="sources"></div></div></div>');
+  var sg=scard.querySelector(".sources");
+  c.sources.forEach(function(sy){
+    sg.appendChild(elh('<div class="srcblock"><h3>'+srcHeader(c,sy)+'</h3>'+
+      '<div class="mini" style="margin:-4px 0 8px">'+esc(sy)+' &middot; '+esc(SRC_SYS[sy].what)+'</div>'+
+      (srcData[sy]||[]).map(function(kv){return '<div class="kv"><span class="k">'+esc(kv[0])+'</span><span class="v">'+esc(kv[1])+'</span></div>';}).join("")+'</div>'));
+  });
+  main.appendChild(scard);
+
+  // usage trend
+  var g=elh('<div class="grid g2"></div>');
+  var U=usageSeries(c, UI.c360_range);
+  var uCard=elh('<div class="card"><div class="card-head"><div><h2>Usage trend</h2><p>'+srcHeader(c,"Network")+'</p></div>'+
+    '<div class="seg" id="rangeSeg">'+["30d","90d","12m"].map(function(r){return '<button data-r="'+r+'" data-on="'+(UI.c360_range===r?"true":"false")+'" type="button">'+r+'</button>';}).join("")+'</div></div>'+
+    '<div class="card-body"><div class="spark">'+sparkSVG(U.data,64)+'</div>'+
+    '<div class="hrow mini" style="margin-top:10px"><span>avg '+fmtGB(U.avg)+' '+U.unit+'</span><span>peak '+fmtGB(U.peak)+' GB</span>'+
+    '<span style="color:'+(U.delta>=0?"var(--good-fg)":"var(--bad-fg)")+'">'+(U.delta>=0?"▲":"▼")+' '+fmtGB(Math.abs(U.delta))+' vs start</span></div>'+
+    '<div class="mini" style="margin-top:3px">'+esc(U.note)+'</div></div></div>');
+  uCard.querySelectorAll("#rangeSeg button").forEach(function(b){ b.addEventListener("click",function(){ UI.c360_range=b.dataset.r; render(); }); });
+  g.appendChild(uCard);
+
+  // computed scores — clickable, route to next action
+  var sc=elh('<div class="card" id="c360Scores"><div class="card-head"><div><h2>Computed scores</h2><p>Recalculated nightly &middot; click a score to act on it</p></div><span class="adv-tag">Per-customer</span></div>'+
+    '<div class="card-body grid" style="grid-template-columns:1fr 1fr 1fr;gap:12px"></div></div>');
+  var scb=sc.querySelector(".card-body");
+  [["Churn risk",c.churn],["Upsell propensity",c.upsell],["Engagement",c.engagement]].forEach(function(r){
+    scb.appendChild(scoreActNode(r[0], r[1], c));
+  });
+  g.appendChild(sc);
+  main.appendChild(g);
+
+  // tickets
+  var tk=elh('<div class="card"><div class="card-head"><div><h2>Support tickets</h2><p>'+c.tickets.filter(function(t){return t.status==="Open";}).length+' open</p></div>'+
+    '<button class="btn sm" id="newTix" type="button">+ New ticket</button></div><div class="card-body" style="display:flex;flex-direction:column;gap:8px"></div></div>');
+  var tkb=tk.querySelector(".card-body");
+  if(!c.tickets.length) tkb.appendChild(elh('<div class="empty">No tickets on file.</div>'));
+  c.tickets.slice().sort(function(a,b){return b.opened-a.opened;}).forEach(function(t){
+    var row=elh('<div class="hrow" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 12px">'+
+      '<div><div style="font-size:12.5px">'+esc(t.subject)+'</div><div class="t-sub mono">'+esc(t.id)+' &middot; '+rel(t.opened)+'</div></div>'+
+      '<div class="chips">'+pill(t.status==="Open"?"warn":"good",t.status)+(t.status==="Open"?'<button class="btn sm" data-res="'+t.id+'" type="button">Resolve</button>':'')+'</div></div>');
+    var rb=row.querySelector("[data-res]");
+    if(rb) rb.addEventListener("click",function(){
+      STORE.update(function(st){ var cc=st.customers.find(function(x){return x.id===c.id;});
+        var tt=cc.tickets.find(function(x){return x.id===t.id;}); tt.status="Resolved";
+        cc.timeline.unshift({at:Date.now(),src:"Support",ev:"Ticket "+t.id+" resolved — "+t.subject});
+        STORE.log("ticket","Resolved ticket "+t.id+" for "+cc.name,c.id); });
+      toast("Ticket "+t.id+" resolved");
+    });
+    tkb.appendChild(row);
+  });
+  tk.querySelector("#newTix").addEventListener("click",function(){
+    modal({title:"New ticket for "+c.name, submitLabel:"Create ticket",
+      body:'<label class="field"><span>Subject</span><input id="fTix" type="text" placeholder="What’s the issue?"></label>',
+      onSubmit:function(ov){
+        var v=ov.querySelector("#fTix").value.trim(); if(!v) return false;
+        STORE.update(function(st){ var cc=st.customers.find(function(x){return x.id===c.id;});
+          var id="T-"+(88300+Math.floor(Math.random()*90));
+          cc.tickets.unshift({id:id,subject:v,status:"Open",opened:Date.now()});
+          cc.timeline.unshift({at:Date.now(),src:"Support",ev:"Ticket "+id+" raised — "+v});
+          STORE.log("ticket","Opened ticket for "+cc.name+" — "+v,c.id); });
+        toast("Ticket created");
+      }});
+  });
+  main.appendChild(tk);
+
+  // notes
+  var nc=elh('<div class="card"><div class="card-head"><div><h2>Notes</h2><p>Internal, not customer-visible</p></div><button class="btn sm" id="newNote" type="button">+ Add note</button></div><div class="card-body" style="display:flex;flex-direction:column;gap:10px"></div></div>');
+  var ncb=nc.querySelector(".card-body");
+  if(!c.notes.length) ncb.appendChild(elh('<div class="empty">No notes yet.</div>'));
+  c.notes.slice().sort(function(a,b){return b.at-a.at;}).forEach(function(n){
+    ncb.appendChild(elh('<div style="font-size:12.5px"><div class="mini">'+esc(n.by)+' &middot; '+rel(n.at)+'</div><div style="margin-top:2px">'+esc(n.text)+'</div></div>'));
+  });
+  nc.querySelector("#newNote").addEventListener("click",function(){
+    modal({title:"Add a note to "+c.name, submitLabel:"Save note",
+      body:'<label class="field"><span>Note</span><textarea id="fNote" placeholder="Context for the next person…"></textarea></label>',
+      onSubmit:function(ov){ var v=ov.querySelector("#fNote").value.trim(); if(!v) return false;
+        STORE.update(function(st){ var cc=st.customers.find(function(x){return x.id===c.id;});
+          cc.notes.unshift({at:Date.now(),by:"You",text:v});
+          STORE.log("note","You added a note to "+cc.name,c.id); });
+        toast("Note saved");
+      }});
+  });
+  main.appendChild(nc);
+
+  // timeline
+  var tlc=elh('<div class="card" id="c360Timeline"><div class="card-head"><div><h2>Activity timeline</h2><p>Merged across every source, most recent first</p></div></div>'+
+    '<div class="twrap"><table class="tbl"><thead><tr><th>When</th><th>Source</th><th>Event</th></tr></thead><tbody></tbody></table></div></div>');
+  var srcTone={CRM:"info",Billing:"mut",Network:"good",Support:"warn",Digital:"info"};
+  var tbb=tlc.querySelector("tbody");
+  if(!c.timeline.length) tbb.appendChild(elh('<tr><td colspan="3"><div class="empty">No activity recorded.</div></td></tr>'));
+  c.timeline.slice(0,14).forEach(function(e){
+    tbb.appendChild(elh('<tr><td class="mono t-sub" style="white-space:nowrap">'+rel(e.at)+'</td><td><span class="pill '+(srcTone[e.src]||"mut")+' timeline-src" style="font-size:10px">'+esc(e.src)+'</span></td><td style="font-size:12.5px">'+esc(e.ev)+'</td></tr>'));
+  });
+  main.appendChild(tlc);
+
+  wrap.appendChild(main);
+  return wrap;
+};
+
+/* ======================================================= VIEW: OPERATOR */
+VIEWS.operator=function(){
+  var s=STORE.get();
+  var wrap=elh('<div class="panel"></div>');
+  wrap.appendChild(elh('<div class="panel-head"><p>Look up a customer, act on the merged view, then build and save an audience list for a campaign.</p></div>'));
+
+  // controls
+  var ctrl=elh('<div class="card"><div class="card-body controls">'+
+    '<label class="fld">Source filter<select id="opSrc">'+["all"].concat(SYSTEMS).map(function(x){return '<option value="'+x+'"'+(UI.op_source===x?" selected":"")+'>'+(x==="all"?"All sources":x)+'</option>';}).join("")+'</select></label>'+
+    '<label class="fld" style="flex:1;min-width:200px">Customer search<input type="search" id="opSearch" placeholder="Name or master ID…" value="'+esc(UI.op_q)+'"></label>'+
+    '</div></div>');
+  wrap.appendChild(ctrl);
+
+  function inSrc(c){ return UI.op_source==="all" || c.sources.indexOf(UI.op_source)>=0; }
+  var scoped=s.customers.filter(inSrc);
+  var atRisk=scoped.filter(function(c){return c.churn>=CHURN_RISK;}).length;
+  var cross=scoped.filter(function(c){return c.sources.length>=3;}).length;
+  var dq=computeDQ(scoped);
+  var k=elh('<div class="grid g3"></div>');
+  [["At-risk customers",atRisk,"churn ≥ "+CHURN_RISK+" · "+(UI.op_source==="all"?"all sources":UI.op_source),"bad"],
+   ["Well-reconciled",cross,"present in 3+ source systems",""],
+   ["Data quality score",dq+"%",UI.op_source==="all"?"book average":UI.op_source+" records","g"]].forEach(function(t){
+    k.appendChild(elh('<div class="metric"><div class="eyebrow">'+t[0]+'</div><div class="k num" style="'+(t[3]==="bad"?"color:var(--bad-fg)":t[3]==="g"?"color:var(--accent-text)":"")+'">'+t[1]+'</div><div class="note">'+t[2]+'</div></div>'));
+  });
+  wrap.appendChild(k);
+
+  // picker + detail
+  var sp=elh('<div class="split"></div>');
+  var pick=elh('<div class="col-side"><div class="card"><div class="card-head"><div><h2>Customers</h2><p id="opPickCount"></p></div></div><div class="card-body" style="padding:12px"><div class="picklist" id="opPick"></div></div></div></div>');
+  function fillPick(){
+    var q=UI.op_q.toLowerCase();
+    var list=scoped.filter(function(c){ return !q || c.name.toLowerCase().indexOf(q)>=0 || c.id.toLowerCase().indexOf(q)>=0; });
+    pick.querySelector("#opPickCount").textContent=list.length+" of "+s.customers.length;
+    var host=pick.querySelector("#opPick"); host.innerHTML="";
+    if(!list.length){ host.appendChild(elh('<div class="empty">No match.</div>')); return; }
+    if(!list.some(function(c){return c.id===s.ui.opCustomerId;})) STORE.quiet(function(st){ st.ui.opCustomerId=list[0].id; });
+    list.forEach(function(c){
+      host.appendChild(custRow(c,function(){ STORE.quiet(function(st){st.ui.opCustomerId=c.id;}); render(); }, c.id===STORE.get().ui.opCustomerId));
+    });
+  }
+  fillPick();
+  sp.appendChild(pick);
+
+  var sel=STORE.cust(s.ui.opCustomerId)||scoped[0]||s.customers[0];
+  var det=elh('<div class="col-main"><div class="card" id="opDetailCard">'+
+    '<div class="card-head"><div><h2>'+esc(sel.name)+' <span class="adv-tag">One activation view</span></h2><p class="mono">'+esc(sel.id)+(sel.tin?' &middot; TIN '+esc(sel.tin):'')+'</p></div>'+pill(churnTone(sel.churn),sel.churn+" churn")+'</div>'+
+    '<div class="halves">'+
+      '<div><h3>Identity (single view)</h3>'+
+        [["Master ID",sel.id],["Reconciliation",isProvisional(sel)?"Provisional — "+pendingFor(sel.id).length+" pending":sel.sources.length+" of 5 systems"],
+         ["Business tax ID",sel.tin||"—"],["Consent",sel.consent==="granted"?"Marketing: granted":sel.consent==="withdrawn"?"Marketing: withdrawn":"B2B agreement"]]
+         .map(function(kv){return '<div class="kv"><span class="k">'+esc(kv[0])+'</span><span class="v">'+esc(kv[1])+'</span></div>';}).join("")+
+        '<div class="eyebrow" style="margin-top:10px">Linked sources</div><div class="chips" style="margin-top:5px">'+sel.sources.map(function(x){return '<span class="pill mut">'+esc(x)+'</span>';}).join("")+'</div></div>'+
+      '<div><h3>Profile &amp; activity (360)</h3>'+
+        [["Segment",sel.segment],["Plan",sel.plan],["ARPU",sel.arpu],["Tenure",sel.tenure],
+         ["Open tickets",String(sel.tickets.filter(function(t){return t.status==="Open";}).length)],["Last activity",sel.timeline.length?rel(sel.timeline[0].at):"—"]]
+         .map(function(kv){return '<div class="kv"><span class="k">'+esc(kv[0])+'</span><span class="v">'+esc(kv[1])+'</span></div>';}).join("")+
+        '<div class="eyebrow" style="margin-top:10px">Churn risk</div><div class="hrow" style="gap:8px;margin-top:5px"><span class="num" style="font-size:13px;color:'+(sel.churn>=CHURN_RISK?"var(--bad-fg)":"var(--ink-2)")+'">'+sel.churn+'%</span><span class="track" style="flex:1"><i style="width:'+sel.churn+'%;background:'+(sel.churn>=CHURN_RISK?"var(--bad-dot)":sel.churn>=40?"var(--warn-dot)":"var(--good-dot)")+'"></i></span></div></div>'+
+    '</div>'+
+    '<div class="foot-row"><span class="note">Audience: '+(sel.churn>=CHURN_RISK?"win-back / retention":"engagement / upsell")+' &middot; resolved from '+sel.sources.length+' sources'+
+      (sel.offers.length?' &middot; last offer: '+esc(sel.offers[0].type):'')+'</span>'+
+      '<div class="btn-row"><button class="btn" id="toAud" type="button">Add to audience</button><button class="btn primary" id="sendOffer" type="button">Send offer</button>'+
+      '<button class="btn" id="op360" type="button">View full 360</button></div></div></div></div>');
+  det.querySelector("#op360").addEventListener("click",function(){ openCustomer(sel.id); });
+  det.querySelector("#sendOffer").addEventListener("click",function(){ openOfferModal(sel); });
+  det.querySelector("#toAud").addEventListener("click",function(){ openAudienceModal(sel); });
+  sp.appendChild(det);
+  wrap.appendChild(sp);
+
+  /* arrived here from a Customer 360 score card — open the matching next step */
+  if(UI.opPrefill){
+    var k=UI.opPrefill; UI.opPrefill=null;
+    setTimeout(function(){
+      if(k==="winback") openOfferModal(sel,"Win-back credit");
+      else if(k==="upsell") openOfferModal(sel,"Upsell — next plan tier");
+      else openAudienceModal(sel);
+    },40);
+  }
+
+  // build a list
+  var bl=elh('<div class="card" id="blCard"><div class="card-head"><div><h2>Build a list</h2><p>Filter the base, tick who you want, then save it as an audience</p></div></div>'+
+    '<div class="card-body controls">'+
+    '<label class="fld">Segment<select id="blSeg">'+["all","Consumer postpaid","Consumer prepaid","B2B","Loyalty"].map(function(x){return '<option'+(UI.bl.seg===x?" selected":"")+'>'+(x==="all"?"All segments":x)+'</option>';}).join("")+'</select></label>'+
+    '<label class="fld">Source<select id="blSrc">'+["any"].concat(SYSTEMS).map(function(x){return '<option'+(UI.bl.src===x?" selected":"")+'>'+(x==="any"?"Any source":x)+'</option>';}).join("")+'</select></label>'+
+    '<label class="fld">Min churn<select id="blMin">'+[0,40,50,60,70].map(function(x){return '<option value="'+x+'"'+(UI.bl.minChurn===x?" selected":"")+'>'+(x===0?"any":x+"+")+'</option>';}).join("")+'</select></label>'+
+    '<label class="fld">Sort by<select id="blSort">'+[["churn","Churn (high→low)"],["upsell","Upsell (high→low)"],["engagement","Engagement (high→low)"],["name","Name (A→Z)"]].map(function(o){return '<option value="'+o[0]+'"'+(UI.bl.sort===o[0]?" selected":"")+'>'+o[1]+'</option>';}).join("")+'</select></label>'+
+    '</div>'+
+    '<div class="twrap"><table class="tbl"><thead><tr><th class="checkcell"><input type="checkbox" id="blAll" aria-label="all"></th><th>Customer</th><th>Segment</th><th>Churn</th><th>Upsell</th><th>ARPU</th><th>Sources</th></tr></thead><tbody id="blBody"></tbody></table></div>'+
+    '<div class="foot-row"><span class="note" id="blCount"></span><div class="btn-row"><button class="btn" id="blClear" type="button">Clear selection</button><button class="btn primary" id="blSave" type="button">Save as audience</button></div></div></div>');
+
+  function blList(){
+    var l=s.customers.slice();
+    if(UI.bl.seg!=="all") l=l.filter(function(c){return c.segment===UI.bl.seg;});
+    if(UI.bl.src!=="any") l=l.filter(function(c){return c.sources.indexOf(UI.bl.src)>=0;});
+    if(UI.bl.minChurn) l=l.filter(function(c){return c.churn>=UI.bl.minChurn;});
+    l.sort(function(a,b){ return UI.bl.sort==="name" ? a.name.localeCompare(b.name) : b[UI.bl.sort]-a[UI.bl.sort]; });
+    return l;
+  }
+  function fillBl(){
+    var l=blList(); var body=bl.querySelector("#blBody"); body.innerHTML="";
+    l.forEach(function(c){
+      var tr=elh('<tr><td class="checkcell"><input type="checkbox" data-id="'+c.id+'"'+(UI.bl.picked[c.id]?" checked":"")+'></td>'+
+        '<td><button class="rowlink" data-open="'+c.id+'">'+esc(c.name)+'</button><div class="t-sub mono">'+esc(c.id)+'</div></td>'+
+        '<td>'+esc(c.segment)+'</td><td>'+pill(churnTone(c.churn),String(c.churn))+'</td><td>'+pill(scoreTone(c.upsell),String(c.upsell))+'</td>'+
+        '<td class="mono">'+esc(c.arpu)+'</td><td class="t-sub">'+c.sources.length+' &middot; '+esc(c.sources.join(", "))+'</td></tr>');
+      tr.querySelector("[data-open]").addEventListener("click",function(){ openCustomer(c.id); });
+      tr.querySelector("input").addEventListener("change",function(e){ UI.bl.picked[c.id]=e.target.checked; countBl(); });
+      body.appendChild(tr);
+    });
+    countBl();
+  }
+  function countBl(){
+    var l=blList(); var n=l.filter(function(c){return UI.bl.picked[c.id];}).length;
+    bl.querySelector("#blCount").textContent=l.length+" match · "+n+" selected";
+    bl.querySelector("#blAll").checked=l.length>0 && n===l.length;
+    bl.querySelector("#blSave").disabled=n===0;
+  }
+  ["blSeg","blSrc","blMin","blSort"].forEach(function(id){
+    bl.querySelector("#"+id).addEventListener("change",function(e){
+      if(id==="blSeg") UI.bl.seg=e.target.value; if(id==="blSrc") UI.bl.src=e.target.value;
+      if(id==="blMin") UI.bl.minChurn=+e.target.value; if(id==="blSort") UI.bl.sort=e.target.value;
+      fillBl();
+    });
+  });
+  bl.querySelector("#blAll").addEventListener("change",function(e){ blList().forEach(function(c){ UI.bl.picked[c.id]=e.target.checked; }); fillBl(); });
+  bl.querySelector("#blClear").addEventListener("click",function(){ UI.bl.picked={}; fillBl(); });
+  bl.querySelector("#blSave").addEventListener("click",function(){
+    var picked=blList().filter(function(c){return UI.bl.picked[c.id];});
+    modal({title:"Save audience", submitLabel:"Save ("+picked.length+" customers)",
+      body:'<label class="field"><span>Audience name</span><input id="fAudName" type="text" placeholder="e.g. Q3 postpaid win-back"></label>'+
+        '<div class="note">'+picked.length+' selected customers, filtered by '+(UI.bl.seg==="all"?"all segments":UI.bl.seg)+
+        (UI.bl.minChurn?', churn '+UI.bl.minChurn+'+':'')+'.</div>',
+      onSubmit:function(ov){
+        var nm=ov.querySelector("#fAudName").value.trim(); if(!nm) return false;
+        STORE.update(function(st){
+          st.audiences.push({id:"AUD-"+(10+st.audiences.length),name:nm,createdAt:Date.now(),
+            rule:{segment:UI.bl.seg,source:UI.bl.src,minChurn:UI.bl.minChurn,sortBy:UI.bl.sort},
+            memberIds:picked.map(function(c){return c.id;}), mapping:defaultMapping(), syncMode:"live", exports:[]});
+          STORE.log("audience","Saved audience “"+nm+"” — "+picked.length+" customers");
+        });
+        UI.bl.picked={};
+        toast("Audience saved — open List sync to map & export");
+      }});
+  });
+  fillBl();
+  wrap.appendChild(bl);
+
+  // existing audiences
+  var al=elh('<div class="card"><div class="card-head"><div><h2>Saved audiences</h2><p>Built here, synced in List sync</p></div></div><div class="card-body" style="display:flex;flex-direction:column;gap:8px"></div></div>');
+  var alb=al.querySelector(".card-body");
+  if(!s.audiences.length) alb.appendChild(elh('<div class="empty">None yet — build one above.</div>'));
+  s.audiences.forEach(function(a){
+    var row=elh('<div class="hrow" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:11px 13px">'+
+      '<div><div style="font-weight:600;font-size:12.5px">'+esc(a.name)+'</div><div class="t-sub mono">'+esc(a.id)+' &middot; '+a.memberIds.length+' members &middot; '+a.exports.length+' exports</div></div>'+
+      '<button class="btn sm" data-a="'+a.id+'" type="button">Open in List sync &rarr;</button></div>');
+    row.querySelector("button").addEventListener("click",function(){ STORE.quiet(function(st){st.ui.syncAudienceId=a.id;}); go("listsync"); });
+    alb.appendChild(row);
+  });
+  wrap.appendChild(al);
+
+  // wire controls (search/source) AFTER build so re-render is via render()
+  ctrl.querySelector("#opSrc").addEventListener("change",function(e){ UI.op_source=e.target.value; render(); });
+  ctrl.querySelector("#opSearch").addEventListener("input",function(e){ UI.op_q=e.target.value; fillPick(); });
+  return wrap;
+};
+
+function defaultMapping(){
+  return {"master_id":"external_ref","full_name":"Name","mobile_e164":"PhoneNumber","email_primary":"Email",
+    "segment":"audience_segment","churn_risk":"custom.churn_score","consent_marketing":"OptInStatus","preferred_language":"Locale"};
+}
+function openOfferModal(sel, presetType){
+  var opts=["Win-back credit","Upsell — next plan tier","Retention — loyalty bonus","Data top-up voucher"];
+  modal({title:"Send an offer to "+sel.name, submitLabel:"Send offer",
+    body:'<label class="field"><span>Offer type</span><select id="fOfferT">'+
+      opts.map(function(o){return '<option'+(o===presetType?" selected":"")+'>'+o+'</option>';}).join("")+'</select></label>'+
+      '<label class="field"><span>Note (optional)</span><input id="fOfferN" type="text" placeholder="Anything the campaign team should know"></label>',
+    onSubmit:function(ov){
+      var t=ov.querySelector("#fOfferT").value, nt=ov.querySelector("#fOfferN").value.trim();
+      STORE.update(function(st){ var cc=st.customers.find(function(x){return x.id===sel.id;});
+        cc.offers.unshift({at:Date.now(),type:t,status:"Queued",note:nt});
+        cc.timeline.unshift({at:Date.now(),src:"CRM",ev:"Offer queued — "+t+(nt?" ("+nt+")":"")});
+        STORE.log("offer",t+" queued for "+cc.name,sel.id); });
+      toast("Offer queued for "+sel.name);
+    }});
+}
+function openAudienceModal(sel){
+  var opts=STORE.get().audiences.map(function(a){return '<option value="'+a.id+'">'+esc(a.name)+'</option>';}).join("");
+  modal({title:"Add "+sel.name+" to an audience", submitLabel:"Add",
+    body:'<label class="field"><span>Audience</span><select id="fAud"><option value="__new">+ New audience…</option>'+opts+'</select></label>'+
+      '<label class="field" id="fNewWrap"><span>New audience name</span><input id="fNewName" type="text" placeholder="e.g. Toul Kork network complaints"></label>',
+    onOpen:function(ov){ var sl=ov.querySelector("#fAud"); function t(){ ov.querySelector("#fNewWrap").style.display=sl.value==="__new"?"":"none"; } sl.addEventListener("change",t); t(); },
+    onSubmit:function(ov){
+      var v=ov.querySelector("#fAud").value;
+      var newName=v==="__new" ? ov.querySelector("#fNewName").value.trim() : null;
+      if(v==="__new" && !newName) return false;
+      STORE.update(function(st){
+        var aud;
+        if(v==="__new"){
+          aud={id:"AUD-"+(10+st.audiences.length),name:newName,createdAt:Date.now(),rule:{segment:"all",source:"any",minChurn:0,sortBy:"churn"},memberIds:[],mapping:defaultMapping(),syncMode:"live",exports:[]};
+          st.audiences.push(aud);
+        } else aud=st.audiences.find(function(a){return a.id===v;});
+        if(aud && aud.memberIds.indexOf(sel.id)<0) aud.memberIds.push(sel.id);
+        STORE.log("audience",sel.name+" added to audience “"+(aud?aud.name:"")+"”",sel.id);
+      });
+      toast(sel.name+" added to audience");
+    }});
+}
+
+/* ======================================================= VIEW: LIST SYNC */
+var COMPARE=[
+  ["Contact & profile management",["yes","Core strength"],["part","Campaign contacts only"],["yes","Unified profile, all sources"]],
+  ["Segmentation",["part","Static saved lists"],["yes","Campaign segments"],["yes","Live, rule-based segments"]],
+  ["Cross-source identity merge",["no","Single system of record"],["no","Assumes clean input"],["yes","Deterministic + probabilistic"]],
+  ["Predictive scores",["no","Add-on / external"],["yes","Propensity models"],["yes","Built in, per customer"]],
+  ["Cross-system account view (B2B)",["part","One org per record"],["no","Consumer-oriented"],["yes","Tax-ID anchored account"]],
+  ["Live re-queryable segments",["no","Snapshot exports"],["part","Scheduled batch refresh"],["yes","Webhook + API, on change"]]
+];
+var MAP_FIELDS=[
+  ["master_id","string",["external_ref","customer_id"]],
+  ["full_name","string",["Name","display_name"]],
+  ["mobile_e164","phone",["PhoneNumber","mobile","msisdn"]],
+  ["email_primary","email",["Email","email_address"]],
+  ["segment","enum",["audience_segment","segment","list_name"]],
+  ["churn_risk","number",["custom.churn_score","score_1"]],
+  ["consent_marketing","boolean",["OptInStatus","subscribed"]],
+  ["preferred_language","string",["Locale","language"]]
+];
+
+VIEWS.listsync=function(){
+  var s=STORE.get();
+  var wrap=elh('<div class="panel"></div>');
+  wrap.appendChild(elh('<div class="panel-head"><p>How this platform compares to the tools it replaces, and how each saved audience is mapped and kept in sync with the campaign tool.</p></div>'));
+
+  // comparison
+  var cmp=elh('<div class="card"><div class="card-head"><div><h2>Capability comparison</h2><p>What each system does for the same job</p></div></div>'+
+    '<div class="twrap"><table class="tbl compare"><thead><tr><th>Capability</th><th>Traditional CRM</th><th>Traditional CVM</th><th class="plat">This platform</th></tr></thead><tbody></tbody></table></div></div>');
+  var m={yes:"✓",part:"~",no:"✗"};
+  COMPARE.forEach(function(r){
+    function cell(v,plat){ return '<td'+(plat?' class="plat"':'')+'><span class="mark '+v[0]+'">'+m[v[0]]+'</span> <span class="'+v[0]+'" style="font-size:11.5px">'+esc(v[1])+'</span></td>'; }
+    cmp.querySelector("tbody").appendChild(elh('<tr><td><b>'+esc(r[0])+'</b></td>'+cell(r[1])+cell(r[2])+cell(r[3],true)+'</tr>'));
+  });
+  wrap.appendChild(cmp);
+
+  // audiences
+  if(!s.audiences.length){
+    var e=elh('<div class="card"><div class="card-body"><div class="empty">No audiences yet.<br><br><button class="btn primary" id="toBuild" type="button">Build one in Operator console</button></div></div></div>');
+    e.querySelector("#toBuild").addEventListener("click",function(){ go("operator"); });
+    wrap.appendChild(e); return wrap;
+  }
+
+  var aud=s.audiences.find(function(a){return a.id===s.ui.syncAudienceId;})||s.audiences[0];
+
+  var picker=elh('<div class="card" id="lsAudience"><div class="card-head"><div><h2>Audience</h2><p>Pick a list to configure</p></div>'+
+    '<select id="audPick">'+s.audiences.map(function(a){return '<option value="'+a.id+'"'+(a.id===aud.id?" selected":"")+'>'+esc(a.name)+' ('+a.memberIds.length+')</option>';}).join("")+'</select></div>'+
+    '<div class="card-body"><div class="hrow"><div><div style="font-weight:600">'+esc(aud.name)+'</div>'+
+    '<div class="mini mono">'+esc(aud.id)+' &middot; created '+rel(aud.createdAt)+' &middot; '+aud.memberIds.length+' members</div></div>'+
+    pill(aud.syncMode==="live"?"good":"warn",aud.syncMode==="live"?"Live webhook sync":"One-time export")+'</div>'+
+    '<div class="chips" style="margin-top:10px">'+aud.memberIds.slice(0,8).map(function(id){var c=STORE.cust(id);return '<span class="pill mut">'+esc(c?c.name:id)+'</span>';}).join("")+(aud.memberIds.length>8?'<span class="pill mut">+'+(aud.memberIds.length-8)+'</span>':'')+'</div></div></div>');
+  picker.querySelector("#audPick").addEventListener("change",function(e){ STORE.update(function(st){st.ui.syncAudienceId=e.target.value;}); });
+  wrap.appendChild(picker);
+
+  var grid=elh('<div class="grid g2"></div>');
+
+  // field mapping
+  var fm=elh('<div class="card"><div class="card-head"><div><h2>Field mapping</h2><p>Platform field &rarr; campaign-tool field for &ldquo;'+esc(aud.name)+'&rdquo;</p></div></div>'+
+    '<div class="twrap"><table class="tbl"><thead><tr><th>Platform field</th><th>Type</th><th>Campaign-tool field</th></tr></thead><tbody></tbody></table></div>'+
+    '<div class="foot-row"><span class="note" id="fmNote">Saved automatically.</span></div></div>');
+  MAP_FIELDS.forEach(function(f){
+    var cur=aud.mapping[f[0]]||f[2][0];
+    var opts=f[2].slice(); if(opts.indexOf(cur)<0) opts.unshift(cur);
+    var tr=elh('<tr><td class="mono">'+esc(f[0])+'</td><td class="t-sub">'+esc(f[1])+'</td>'+
+      '<td><select data-f="'+esc(f[0])+'">'+opts.map(function(o){return '<option'+(o===cur?" selected":"")+'>'+esc(o)+'</option>';}).join("")+'</select></td></tr>');
+    tr.querySelector("select").addEventListener("change",function(e){
+      STORE.update(function(st){ var a=st.audiences.find(function(x){return x.id===aud.id;}); a.mapping[f[0]]=e.target.value; });
+      $("#fmNote") && ($("#fmNote").textContent="Mapping updated — next export will use it.");
+    });
+    fm.querySelector("tbody").appendChild(tr);
+  });
+  grid.appendChild(fm);
+
+  // sync + run
+  var right=elh('<div style="display:flex;flex-direction:column;gap:16px"></div>');
+  var sm=elh('<div class="card" id="lsSync"><div class="card-head"><div><h2>Sync mode</h2><p>How membership changes reach the campaign tool</p></div><span class="adv-tag">Live segments</span></div>'+
+    '<div class="card-body" style="display:flex;flex-direction:column;gap:10px">'+
+    ['once','live'].map(function(mode){
+      var on=aud.syncMode===mode;
+      return '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">'+
+        '<input type="radio" name="sm" value="'+mode+'"'+(on?" checked":"")+'>'+
+        '<span><b>'+(mode==="once"?"One-time export":"Live webhook sync")+'</b><br><span class="note">'+
+        (mode==="once"?"A CSV snapshot of the current members. Goes stale as the base changes.":"Membership is re-evaluated continuously; adds and removals pushed as they happen.")+'</span></span></label>';
+    }).join("")+'</div></div>');
+  sm.querySelectorAll('input[name="sm"]').forEach(function(r){ r.addEventListener("change",function(){
+    STORE.update(function(st){ var a=st.audiences.find(function(x){return x.id===aud.id;}); a.syncMode=r.value; });
+  }); });
+  right.appendChild(sm);
+
+  var last=aud.exports[0];
+  var le=elh('<div class="card" id="lsExport"><div class="card-head"><div><h2>Export</h2><p>Destination: Campaign Tool &mdash; Audiences API</p></div>'+
+    pill(aud.exports.length?"good":"mut",aud.exports.length?"Healthy":"Never run")+'</div>'+
+    '<div class="card-body"><div class="kv"><span class="k">Mode</span><span class="v">'+(aud.syncMode==="live"?"Live webhook sync":"One-time export")+'</span></div>'+
+    '<div class="kv"><span class="k">Members</span><span class="v mono">'+aud.memberIds.length+'</span></div>'+
+    '<div class="kv"><span class="k">Last run</span><span class="v mono">'+(last?rel(last.at):"—")+'</span></div>'+
+    (last?'<div class="kv"><span class="k">Last delta</span><span class="v mono">+'+last.added+' / −'+last.removed+'</span></div>':'')+
+    '<div class="btn-row" style="margin-top:12px"><button class="btn primary" id="runExport" type="button">Run export now</button></div></div>'+
+    (aud.exports.length?'<div class="twrap"><table class="tbl"><thead><tr><th>When</th><th>Records</th><th>Added</th><th>Removed</th></tr></thead><tbody>'+
+      aud.exports.slice(0,6).map(function(e){return '<tr><td class="mono t-sub">'+rel(e.at)+'</td><td class="mono">'+fmtInt(e.records)+'</td><td class="mono">+'+e.added+'</td><td class="mono">−'+e.removed+'</td></tr>';}).join("")+
+      '</tbody></table></div>':'')+'</div>');
+  le.querySelector("#runExport").addEventListener("click",function(){
+    STORE.update(function(st){
+      var a=st.audiences.find(function(x){return x.id===aud.id;});
+      var added=Math.floor(Math.random()*5), removed=Math.floor(Math.random()*3);
+      var base=a.exports.length?a.exports[0].records:12000+a.memberIds.length;
+      a.exports.unshift({at:Date.now(),records:base+added-removed,added:added,removed:removed});
+      STORE.log("export","Audience “"+a.name+"” exported — "+fmtInt(base+added-removed)+" records");
+    });
+    toast("Export complete");
+  });
+  right.appendChild(le);
+  grid.appendChild(right);
+  wrap.appendChild(grid);
+  return wrap;
+};
+
+/* ======================================================= guided tours */
+var TOURS=[
+ {id:"identity", title:"Resolve a customer's identity", role:"Data steward", steps:[
+   {v:"home", sel:'.nav-btn[data-id="identity"]', t:"Your morning dashboard. The orange badge on <b>Identity resolution</b> is the number of candidate records waiting to be matched. Open it — or hit Next."},
+   {v:"identity", sel:"#idQueueCard", t:"Each row is a record from one source system that may belong to a customer already on file. The <b>confidence score</b> blends name, phone, email and tax-ID signals."},
+   {v:"identity", sel:"#idQueueCard", t:"Anything <b>&ge; 0.90</b> is safe to bulk-confirm. For a borderline score, nudge it with &minus; / + then decide: <b>Confirm merge</b>, Review, or Reject."},
+   {v:"identity", sel:"#idQueueCard", t:"Try it: confirm the <b>Lim Chanthou &mdash; Billing</b> row. That Billing record now lives on his one unified profile, and his source count goes 3 &rarr; 4 of 5."},
+   {v:"c360", sel:"#c360Recon", t:"Open Lim Chanthou in the directory. The <b>Reconciliation</b> line and source chips reflect every merge. Identity fields stay <i>provisional</i> until every candidate is resolved.<br><br>This cross-source stitch is the step a CRM or CVM skips."}
+ ]},
+ {id:"activate", title:"Act on an at-risk customer", role:"Campaign ops", steps:[
+   {v:"home", sel:"#homeTiles", t:"The <b>Customers at risk</b> tile counts everyone with a churn score &ge; 60. Click it to open the console."},
+   {v:"operator", sel:"#opDetailCard", t:"Pick a customer. The detail card splits <b>identity (single view)</b> from <b>profile &amp; activity (360)</b> &mdash; one screen, every system."},
+   {v:"operator", sel:"#opDetailCard", t:"<b>Send offer</b> logs a win-back or upsell to campaign ops and drops it on the customer's timeline. <b>Add to audience</b> bundles them into a reusable list."},
+   {v:"operator", sel:"#opDetailCard", t:"Go ahead &mdash; hit <b>Send offer</b>, pick a type, send."},
+   {v:"c360", sel:"#c360Timeline", t:"Everything you just did appears on this customer's <b>activity timeline</b> and in the global feed on Home. Data and actions live together."}
+ ]},
+ {id:"campaign", title:"Build & sync a campaign audience", role:"Marketing ops", steps:[
+   {v:"operator", sel:"#blCard", t:"Scroll to <b>Build a list</b>. Filter by segment, source system and churn, then tick the customers you want."},
+   {v:"operator", sel:"#blCard", t:"<b>Save as audience</b> turns the selection into a named, reusable list that shows up in List sync."},
+   {v:"listsync", sel:"#lsAudience", t:"Pick your audience. <b>Field mapping</b> lines up each platform field with the campaign tool's field name &mdash; saved per audience."},
+   {v:"listsync", sel:"#lsSync", t:"Choose <b>one-time export</b> (a snapshot) or <b>live webhook sync</b> &mdash; membership re-evaluates on every score change or merge and pushes adds/removals automatically."},
+   {v:"listsync", sel:"#lsExport", t:"<b>Run export</b> pushes it and logs the run. Live, self-updating segments are exactly what a CVM's scheduled batch can't give you."}
+ ]},
+ {id:"b2b", title:"The B2B tax-ID account", role:"Enterprise / account team", steps:[
+   {v:"identity", sel:"#idB2bCard", t:"Scroll to the <b>business account</b> card. It's anchored on the registered <b>tax ID</b> &mdash; not a phone or email that changes."},
+   {v:"identity", sel:"#idB2bCard", t:"Every relationship &mdash; mobile fleet, enterprise fibre, leased line &mdash; rolls up under one account, <b>even across different billing platforms</b>."},
+   {v:"identity", sel:"#idB2bCard", t:"Toggle the <b>intercompany exclusion</b>: relationships that resolve to another DCT Group entity are held out of cross-sell, so you never market to yourself.<br><br>A consumer CVM or a single-org CRM record can't represent this."}
+ ]}
+];
+var TOUR=null;
+function startTour(id){ TOUR={id:id,i:0}; applyTourStep(); }
+function endTour(done){
+  TOUR=null;
+  document.querySelectorAll(".tour-target").forEach(function(el){ el.classList.remove("tour-target"); });
+  renderTourDock();
+  if(done) toast("Tour complete — try another from How it works");
+}
+function tourCtx(){ var t=TOURS.find(function(x){return x.id===TOUR.id;}); return {t:t, s:t.steps[TOUR.i]}; }
+function applyTourStep(){
+  var c=tourCtx();
+  if(active!==c.s.v) go(c.s.v,{keepScroll:true}); else render();
+}
+function tourNext(){ var c=tourCtx(); if(TOUR.i>=c.t.steps.length-1) endTour(true); else { TOUR.i++; applyTourStep(); } }
+function tourPrev(){ if(TOUR.i>0){ TOUR.i--; applyTourStep(); } }
+function applyTourHighlight(){
+  document.querySelectorAll(".tour-target").forEach(function(el){ el.classList.remove("tour-target"); });
+  if(!TOUR) return;
+  var sel=tourCtx().s.sel; if(!sel) return;
+  var el=document.querySelector(sel);
+  if(el){ el.classList.add("tour-target"); try{ el.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){} }
+}
+function renderTourDock(){
+  var host=$("#tourHost"); host.innerHTML="";
+  if(!TOUR) return;
+  var c=tourCtx(); var n=c.t.steps.length;
+  var d=elh('<div class="tourdock" role="dialog" aria-label="Guided tour">'+
+    '<div class="td-h"><span class="tt">'+esc(c.t.title)+'</span><span class="ts">STEP '+(TOUR.i+1)+' / '+n+'</span></div>'+
+    '<div class="td-b">'+c.s.t+'</div>'+
+    '<div class="td-f"><button class="td-close" type="button">Exit tour</button>'+
+      '<span class="btn-row">'+(TOUR.i>0?'<button class="btn sm" data-x="prev" type="button">Back</button>':'')+
+      '<button class="btn sm primary" data-x="next" type="button">'+(TOUR.i>=n-1?"Finish":"Next")+'</button></span></div></div>');
+  d.querySelector(".td-close").addEventListener("click",function(){ endTour(false); });
+  var p=d.querySelector('[data-x="prev"]'); if(p) p.addEventListener("click",tourPrev);
+  d.querySelector('[data-x="next"]').addEventListener("click",tourNext);
+  host.appendChild(d);
+}
+
+/* ======================================================= VIEW: HOW IT WORKS */
+function fnode(o){
+  var inner='<div class="fh">'+(o.icon?'<svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none">'+ICONS[o.icon]+'</svg>':'')+'<span class="ft">'+esc(o.t)+'</span></div>'+
+    (o.step?'<span class="fstep">'+esc(o.step)+'</span>':'')+(o.s?'<span class="fs">'+o.s+'</span>':'');
+  if(o.v){ var b=elh('<button class="fnode" type="button">'+inner+'</button>'); b.addEventListener("click",function(){ go(o.v); }); return b; }
+  return elh('<div class="fnode">'+inner+'</div>');
+}
+var FARROW='<span class="farrow"><svg viewBox="0 0 24 16"><path d="M2 8h18M15 3l6 5-6 5"/></svg></span>';
+function flowStrip(nodes){
+  var row=elh('<div class="flowrow"></div>');
+  nodes.forEach(function(nd,i){ if(i) row.appendChild(elh(FARROW)); row.appendChild(fnode(nd)); });
+  return row;
+}
+var GOAL={ retain:{t:"Retain",cls:"accent"}, grow:{t:"Grow",cls:"pop"}, trust:{t:"Trust the data",cls:"info"} };
+
+VIEWS.flow=function(){
+  var wrap=elh('<div class="panel"></div>');
+  wrap.appendChild(elh('<div class="panel-head"><p>Why we are building this, the impact it is meant to deliver, and how every capability ladders up to that goal &mdash; then the working end-to-end flow and guided tours.</p></div>'));
+
+  /* ---- THE END GOAL ---- */
+  var gc=elh('<div class="card"><div class="card-head"><div><h2>The end goal</h2><p>What success looks like when this is done</p></div></div>'+
+    '<div class="card-body">'+
+    '<div style="font-size:15px;font-weight:600;line-height:1.5;max-width:64ch">One trusted, living view of every customer &mdash; consumer <i>and</i> business &mdash; that <span style="color:var(--accent-text)">any team can act on the moment it changes</span>, so we keep more customers, grow the ones we have, and stop paying for bad data.</div>'+
+    '<div class="grid g3" style="gap:12px;margin-top:16px">'+
+    [["retain","Keep more customers","Spot churn risk while there is still time to act, then work the merged view — not a fragment — to win them back."],
+     ["grow","Grow the accounts we have","Surface who is ready for more and put the right offer in front of them, across every product line and every billing platform."],
+     ["trust","Stop paying for bad data","One identity, one source of truth, live consent and self-updating segments — no duplicate outreach, no stale lists, no manual stitching."]]
+     .map(function(p){ var g=GOAL[p[0]]; return '<div class="pillar"><div class="ph">'+pill(g.cls,g.t)+'</div>'+
+       '<div style="font-weight:600;font-size:12.5px;margin-top:8px">'+esc(p[1])+'</div>'+
+       '<div class="pd">'+esc(p[2])+'</div></div>'; }).join("")+
+    '</div></div></div>');
+  wrap.appendChild(gc);
+
+  /* ---- THE IMPACT ---- */
+  var IMPACT=[
+    ["Monthly postpaid churn","2.0%","1.6%  ( −0.4 pp )","Earlier flags + targeted win-back on the merged view"],
+    ["At-risk customers actioned before they leave","~0%  (no early signal)","60–80%","A churn score on every unified profile, every night"],
+    ["Cross- / up-sell take rate","3–5%","8–12%","Per-customer propensity + one screen to act on"],
+    ["Time to launch a targeted campaign","3–5 days","under 1 hour","Self-serve audiences, live sync to the campaign tool"],
+    ["Marketable-base data accuracy","~80%","95%+","Identity merge + consent held in one place"],
+    ["Wasted / duplicate contacts per send","10–15%","under 2%","Single identity, live opt-out honoured everywhere"]
+  ];
+  var ic=elh('<div class="card"><div class="card-head"><div><h2>The impact</h2><p>The business case, in the numbers management cares about</p></div><span class="adv-tag">Buy-in</span></div>'+
+    '<div class="twrap"><table class="tbl"><thead><tr><th>Outcome</th><th>Where teams are today</th><th>Target with the platform</th><th>What gets us there</th></tr></thead><tbody></tbody></table></div>'+
+    '<div class="foot-row"><span class="note" style="max-width:70ch">On a 1.4M postpaid base, shaving monthly churn by 0.4 pp keeps roughly <b>5,600 customers a month</b> &mdash; at ~₭ 90k ARPU the platform pays for itself many times over. Figures here are illustrative &mdash; drop in DCT’s own baselines to build the case.</span></div></div>');
+  IMPACT.forEach(function(r){
+    ic.querySelector("tbody").appendChild(elh('<tr><td style="font-weight:500">'+esc(r[0])+'</td>'+
+      '<td class="muted">'+esc(r[1])+'</td><td><b style="color:var(--accent-text)">'+esc(r[2])+'</b></td>'+
+      '<td class="t-sub">'+esc(r[3])+'</td></tr>'));
+  });
+  wrap.appendChild(ic);
+
+  /* ---- CAPABILITY -> GOAL LADDER ---- */
+  var DIFF=[
+    {icon:"merge2", t:"Cross-source identity merge", crm:"Not built for it", cvm:"Assumes clean input", v:"identity", goal:"trust",
+     unlocks:"one customer record instead of 3–5 fragments across systems",
+     outcome:"you can finally count, target and measure a real customer &mdash; the base every other outcome sits on"},
+    {icon:"spark", t:"Predictive scores on every profile", crm:"Add-on / external", cvm:"Models, not per-record", v:"c360", goal:"retain",
+     unlocks:"a ranked list of who is about to leave and who is ready to buy — nightly, per customer",
+     outcome:"act before churn instead of after it, and lead with the offer most likely to land"},
+    {icon:"source", t:"Tax-ID-anchored B2B accounts", crm:"One org per record", cvm:"Consumer-oriented", v:"identity", goal:"grow",
+     unlocks:"the true size and spend of an enterprise account across every product and billing platform",
+     outcome:"cross-sell the whole account, protect the renewal, and stop marketing to our own group companies"},
+    {icon:"listsync", t:"Live, re-queryable segments", crm:"Snapshot exports", cvm:"Scheduled batch refresh", v:"listsync", goal:"trust",
+     unlocks:"audiences that re-evaluate themselves on every merge, score change and opt-out",
+     outcome:"campaigns launch in minutes and always reach exactly the right people — no stale CSVs, no wasted sends"},
+    {icon:"operator", t:"One activation view", crm:"System of record only", cvm:"Campaign contacts only", v:"operator", goal:"grow",
+     unlocks:"any agent or marketer acting on identity + account + profile + activity in a single screen",
+     outcome:"faster, better decisions with less swivel-chair — and far fewer wrong or duplicate contacts"}
+  ];
+  var dc=elh('<div class="card" id="flowDiff"><div class="card-head"><div><h2>How every capability ladders up to the goal</h2><p>Each one is something a CRM or CVM alone can’t do &mdash; and each one drives a specific outcome</p></div><span class="adv-tag">Advanced</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:10px"></div></div>');
+  DIFF.forEach(function(x){
+    var g=GOAL[x.goal];
+    var row=elh('<div style="border:1px solid var(--border);border-radius:9px;padding:14px;background:var(--surface-2)">'+
+      '<div class="hrow"><div style="display:flex;gap:9px;align-items:center">'+
+        '<span style="width:26px;height:26px;border-radius:7px;background:var(--pop-soft);display:grid;place-items:center;flex:none">'+
+        '<svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--pop)" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round">'+ICONS[x.icon]+'</svg></span>'+
+        '<span style="font-weight:600;font-size:12.5px">'+esc(x.t)+'</span></div>'+
+        '<div class="btn-row" style="align-items:center">'+pill(g.cls,"Goal · "+g.t)+'<button class="btn sm" type="button">See it &rarr;</button></div></div>'+
+      '<div class="chain"><span class="pill mut" style="font-size:9.5px">CRM: '+esc(x.crm)+'</span><span class="pill mut" style="font-size:9.5px">CVM: '+esc(x.cvm)+'</span><span class="adv-tag">Only here</span></div>'+
+      '<div class="chain" style="margin-top:9px;color:var(--ink)"><span class="ca">Unlocks</span> &rarr; '+x.unlocks+'</div>'+
+      '<div class="chain" style="margin-top:3px;color:var(--ink)"><span class="ca">Outcome</span> &rarr; '+x.outcome+'</div></div>');
+    row.querySelector("button").addEventListener("click",function(){ go(x.v); });
+    dc.querySelector(".card-body").appendChild(row);
+  });
+  wrap.appendChild(dc);
+
+  var tc=elh('<div class="card"><div class="card-head"><div><h2>Guided tours</h2><p>Each one drives you through a real end-to-end use case, step by step, on the live screens</p></div></div><div class="card-body" style="display:flex;flex-direction:column;gap:8px"></div></div>');
+  TOURS.forEach(function(t){
+    var row=elh('<div class="hrow" style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:11px 13px">'+
+      '<div><div style="font-weight:600;font-size:12.5px">'+esc(t.title)+'</div><div class="mini">'+t.steps.length+' steps &middot; '+esc(t.role)+'</div></div>'+
+      '<button class="btn sm primary" type="button">&#9654;&nbsp; Start tour</button></div>');
+    row.querySelector("button").addEventListener("click",function(){ startTour(t.id); });
+    tc.querySelector(".card-body").appendChild(row);
+  });
+  wrap.appendChild(tc);
+
+  var bp=elh('<div class="card"><div class="card-head"><div><h2>End-to-end pipeline</h2><p>How a raw record becomes retained revenue &mdash; click any stage to open it</p></div></div><div class="card-body"><div class="board"></div></div></div>');
+  bp.querySelector(".board").appendChild(flowStrip([
+    {icon:"source",   t:"Source systems",     s:"CRM &middot; Billing &middot; Network &middot; Support &middot; Digital", step:"Raw records"},
+    {icon:"identity", t:"Identity resolution", s:"Deterministic + probabilistic matching, steward review", step:"Stitch", v:"identity"},
+    {icon:"c360",     t:"Unified customer",    s:"One profile, every source, provisional flags cleared", step:"Master record", v:"c360"},
+    {icon:"spark",    t:"Predictive scores",   s:"Churn, upsell, engagement &mdash; per customer, nightly", step:"Enrich", v:"c360"},
+    {icon:"operator", t:"Activation",          s:"Search, act, build lists on the merged view", step:"Operate", v:"operator"},
+    {icon:"listsync", t:"List sync",           s:"Field mapping, one-time or live webhook sync", step:"Deliver", v:"listsync"},
+    {icon:"target",   t:"Retained & grown",    s:"Lower churn, higher take-rate, no wasted spend", step:"The goal"}
+  ]));
+  wrap.appendChild(bp);
+
+  var DIFF=[
+    {icon:"merge2", t:"Cross-source identity merge", crm:"Not built for it", cvm:"Assumes clean input", v:"identity",
+     d:"One customer, stitched from every system with deterministic <i>and</i> probabilistic matching plus a human review queue. Neither tool does this on its own."},
+    {icon:"spark", t:"Predictive scores on every profile", crm:"Add-on / external", cvm:"Models, not per-record", v:"c360",
+     d:"Churn, upsell and engagement attached to each unified customer and recalculated nightly &mdash; visible on every screen, not locked inside a campaign tool."},
+    {icon:"source", t:"Tax-ID-anchored B2B accounts", crm:"One org per record", cvm:"Consumer-oriented", v:"identity",
+     d:"Every relationship across every billing platform rolled up under one account, with automatic intercompany exclusion so you don’t cross-sell yourself."},
+    {icon:"listsync", t:"Live, re-queryable segments", crm:"Snapshot exports", cvm:"Scheduled batch refresh", v:"listsync",
+     d:"An audience re-evaluates itself on every merge and score change and pushes adds &amp; removals to the campaign tool in real time &mdash; no stale CSVs."},
+    {icon:"operator", t:"One activation view", crm:"System of record only", cvm:"Campaign contacts only", v:"operator",
+     d:"Identity, account, profile and activity from all five sources on one screen an operator can act on."}
+  ];
+  var dc=elh('<div class="card" id="flowDiff"><div class="card-head"><div><h2>What this does that CRM + CVM can’t</h2><p>The reason to run this alongside &mdash; or instead of &mdash; the tools you already have</p></div><span class="adv-tag">Advanced</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:10px"></div></div>');
+  DIFF.forEach(function(x){
+    var row=elh('<div style="border:1px solid var(--border);border-radius:9px;padding:13px;background:var(--surface-2)">'+
+      '<div class="hrow"><div style="display:flex;gap:9px;align-items:center">'+
+        '<span style="width:26px;height:26px;border-radius:7px;background:var(--accent-soft);display:grid;place-items:center;flex:none">'+
+        '<svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--accent-text)" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round">'+ICONS[x.icon]+'</svg></span>'+
+        '<span style="font-weight:600;font-size:12.5px">'+esc(x.t)+'</span></div>'+
+        '<button class="btn sm" type="button">See it &rarr;</button></div>'+
+      '<div style="font-size:12px;color:var(--ink-2);margin:9px 0 0;line-height:1.5">'+x.d+'</div>'+
+      '<div class="chips" style="margin-top:9px">'+
+        '<span class="pill mut" style="font-size:10px">CRM: '+esc(x.crm)+'</span>'+
+        '<span class="pill mut" style="font-size:10px">CVM: '+esc(x.cvm)+'</span>'+
+        '<span class="adv-tag">Only here</span></div></div>');
+    row.querySelector("button").addEventListener("click",function(){ go(x.v); });
+    dc.querySelector(".card-body").appendChild(row);
+  });
+  wrap.appendChild(dc);
+
+  var LANES=[
+    {t:"Resolve identity", s:"Data steward", tour:"identity", nodes:[
+      {t:"Candidate record surfaces", s:"from a source system", step:"1"},
+      {t:"Steward opens the queue", s:"confidence + signals shown", step:"2", v:"identity"},
+      {t:"Confirm / review / reject", s:"score nudged if borderline", step:"3", v:"identity"},
+      {t:"Record merges to profile", s:"source count goes up", step:"4"},
+      {t:"Master record complete", s:"provisional flags cleared", step:"5", v:"c360"}
+    ]},
+    {t:"Save an at-risk customer", s:"Campaign ops", tour:"activate", nodes:[
+      {t:"Churn score flags them", s:"score &ge; 60", step:"1", v:"home"},
+      {t:"Open in the console", s:"identity + profile in one card", step:"2", v:"operator"},
+      {t:"Send win-back offer", s:"logged to campaign ops", step:"3", v:"operator"},
+      {t:"Add to an audience", s:"reusable list", step:"4", v:"operator"},
+      {t:"Shows on the timeline", s:"+ global activity feed", step:"5", v:"c360"}
+    ]},
+    {t:"Launch a campaign", s:"Marketing ops", tour:"campaign", nodes:[
+      {t:"Filter the base", s:"segment, source, churn", step:"1", v:"operator"},
+      {t:"Save as audience", s:"named, reusable", step:"2", v:"operator"},
+      {t:"Map to campaign fields", s:"saved per audience", step:"3", v:"listsync"},
+      {t:"Pick sync mode", s:"snapshot or live webhook", step:"4", v:"listsync"},
+      {t:"Export / stays in sync", s:"adds &amp; removals auto-push", step:"5", v:"listsync"}
+    ]}
+  ];
+  var jc=elh('<div class="card"><div class="card-head"><div><h2>The three journeys, step by step</h2><p>Read along, click a node to open that screen, or launch the matching tour</p></div></div><div class="card-body" style="display:flex;flex-direction:column;gap:20px"></div></div>');
+  LANES.forEach(function(L){
+    var lane=elh('<div class="lane"><div class="lane-label"><div class="ll-t">'+esc(L.t)+'</div><div class="ll-s">'+esc(L.s)+'</div>'+
+      '<button class="btn sm" type="button" style="margin-top:8px">&#9654;&nbsp; Tour</button></div><div class="board" style="flex:1"></div></div>');
+    lane.querySelector("button").addEventListener("click",function(){ startTour(L.tour); });
+    lane.querySelector(".board").appendChild(flowStrip(L.nodes));
+    jc.querySelector(".card-body").appendChild(lane);
+  });
+  wrap.appendChild(jc);
+  return wrap;
+};
+
+/* ======================================================= VIEW: RULES & SCORING */
+var SCOREMETA={
+  churn:{title:"Churn risk", tail:"higher = more likely to leave", pill:function(v){return pill(churnTone(v),v+" · "+band(v));}},
+  engagement:{title:"Engagement", tail:"higher = more engaged", pill:function(v){return '<span class="pill info"><span class="dot"></span>'+v+' · '+band(v)+'</span>';}},
+  upsell:{title:"Upsell propensity", tail:"higher = more likely to take more", pill:function(v){return '<span class="pill pop"><span class="dot"></span>'+v+' · '+band(v)+'</span>';}}
+};
+function scoreFormula(key){
+  var sc=STORE.get().config.scores[key];
+  var terms=[String(sc.base)];
+  (sc.fields||[]).forEach(function(f){ var d=FIELD[f.key]; if(!d) return;
+    terms.push(d.unit.indexOf("/")===0 ? f.key+"&times;"+f.weight : "("+f.key+" ? "+f.weight+" : 0)"); });
+  return "score = clamp( "+terms.join(" + ").replace(/\+ \(/g,"+ (")+" , 0, 100 )";
+}
+function specJSON(){
+  var c=STORE.get().config, out={
+    spec_version:"1.1", generated:new Date().toISOString(),
+    thresholds:{ at_risk_churn:c.thresholds.atRisk, auto_merge_confidence:c.thresholds.autoMerge,
+      well_reconciled_min_sources:c.thresholds.wellReconciled, score_band_medium:c.thresholds.bandMedium, score_band_high:c.thresholds.bandHigh },
+    scores:{}
+  };
+  ["churn","engagement","upsell"].forEach(function(k){
+    var sc=c.scores[k];
+    out.scores[ {churn:"churn_risk",engagement:"engagement",upsell:"upsell_propensity"}[k] ]={
+      description:"0–100. "+SCOREMETA[k].tail+". Recomputed nightly.",
+      formula:scoreFormula(k).replace(/&times;/g,"*").replace(/&[a-z]+;/g,""),
+      base:sc.base,
+      fields:(sc.fields||[]).map(function(f){ var d=FIELD[f.key]||{}; return {
+        field:f.key, weight:f.weight, input:d.note, source:d.source, coverage_pct:d.coverage }; })
+    };
+  });
+  out.scores.data_quality={ description:"0–100, per customer, averaged for a book of business.",
+    formula:"clamp( avg_over_customers( "+c.dq.base+" + reconciled_sources * "+c.dq.perSource+" ), 0, 100 )",
+    weights:c.dq, inputs:{ reconciled_sources:"number of source systems merged into the profile" } };
+  out.scores.match_confidence={ description:"0.00–0.99. Confirm-to-merge threshold is auto_merge_confidence.",
+    formula:"min( "+c.match.base+" + (name?"+c.match.name+":0) + (phone?"+c.match.phone+":0) + (email?"+c.match.email+":0) + (tax_id?"+c.match.taxId+":0), 0.99 )",
+    weights:c.match, inputs:{ signals:"which of name / phone / email / tax_id matched between the two records" } };
+  return out;
+}
+function copyJSON(obj,label){
+  try{ navigator.clipboard.writeText(JSON.stringify(obj,null,2)); }catch(e){}
+  toast((label||"Spec")+" copied to clipboard");
+}
+function wstepEl(value, step, onChange){
+  var node=elh('<span class="wstep"><button type="button" data-d="-1">&minus;</button>'+
+    '<input type="number" value="'+value+'" step="'+step+'"><button type="button" data-d="1">+</button></span>');
+  var inp=node.querySelector("input"), dp=step<1?2:1;
+  function set(v){ v=+(Math.round(v/step)*step).toFixed(dp); inp.value=v; onChange(v); }
+  node.querySelectorAll("button").forEach(function(b){ b.addEventListener("click",function(){ set((parseFloat(inp.value)||0)+parseInt(b.dataset.d,10)*step); }); });
+  inp.addEventListener("change",function(){ var v=parseFloat(inp.value); if(isNaN(v)){ inp.value=value; return; } set(v); });
+  return node;
+}
+
+function fieldPickerModal(scoreKey){
+  var active=(STORE.get().config.scores[scoreKey].fields||[]).map(function(f){return f.key;});
+  var groups={};
+  FIELDLIB.forEach(function(f){ (groups[f.source]=groups[f.source]||[]).push(f); });
+  var body='<div class="mini" style="margin-bottom:6px">Fields marked <span class="adv-tag" style="vertical-align:middle">Recommended</span> are known signals for this score. Watch coverage — a field only a fraction of customers have makes the score unreliable.</div><div id="fpList" style="max-height:52vh;overflow:auto;border:1px solid var(--border);border-radius:8px"></div>';
+  var m=modal({title:"Add a field to "+SCOREMETA[scoreKey].title, cancelLabel:"Done", body:body,
+    onOpen:function(ov){
+      var host=ov.querySelector("#fpList");
+      Object.keys(groups).forEach(function(src){
+        host.appendChild(elh('<div style="padding:8px 12px;background:var(--surface-2);border-bottom:1px solid var(--border)"><span class="eyebrow">'+esc(src)+'</span></div>'));
+        groups[src].forEach(function(f){
+          var isActive=active.indexOf(f.key)>=0, rec=f.suggest[scoreKey]!=null;
+          var row=elh('<div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border)">'+
+            '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500">'+esc(f.label)+(rec?' <span class="adv-tag">Recommended</span>':'')+'</div>'+
+            '<div class="mini">'+esc(f.note)+'</div>'+
+            '<div class="fr-meta"><span class="cov"><i style="width:'+f.coverage+'%"></i></span><span class="cov-t">'+f.coverage+'% coverage</span></div></div>'+
+            '<button class="btn sm'+(isActive?'':' primary')+'" type="button"'+(isActive?' disabled':'')+'>'+(isActive?'Added':'Add'+(rec?' (+'+f.suggest[scoreKey]+')':''))+'</button></div>');
+          row.querySelector("button").addEventListener("click",function(){
+            STORE.update(function(st){ st.config.scores[scoreKey].fields.push({key:f.key, weight: f.suggest[scoreKey]!=null?f.suggest[scoreKey]:5}); });
+            toast(f.label+" added to "+SCOREMETA[scoreKey].title+" — scores recalculated");
+            m.close();
+          });
+          host.appendChild(row);
+        });
+      });
+    }
+  });
+}
+
+VIEWS.rules=function(){
+  var s=STORE.get(), cfg=s.config;
+  if(!UI.rules_c || !STORE.cust(UI.rules_c)) UI.rules_c="MST-9982";
+  var sample=STORE.cust(UI.rules_c);
+  var wrap=elh('<div class="panel"></div>');
+  wrap.appendChild(elh('<div class="panel-head"><p>The <b>business</b> owns this logic. Plug fields in and out of each score, tune the weights, and watch every screen recalculate &mdash; then export the spec so engineering builds <i>against it</i>. The app flags which fields are known signals and warns when coverage is too low to trust.</p></div>'));
+
+  wrap.appendChild(elh('<div class="card"><div class="card-body hrow">'+
+    '<div><div style="font-weight:600;font-size:13px">Preview against a sample customer</div>'+
+    '<div class="mini">Each score card shows this customer’s factor-by-factor breakdown</div></div>'+
+    '<div class="btn-row"><select id="rSample">'+s.customers.map(function(c){return '<option value="'+c.id+'"'+(c.id===UI.rules_c?" selected":"")+'>'+esc(c.name)+' &middot; churn '+c.churn+'</option>';}).join("")+'</select>'+
+    '<button class="btn primary" id="rExportAll" type="button">Export full build spec (JSON)</button></div></div></div>'));
+  wrap.querySelector("#rSample").addEventListener("change",function(e){ UI.rules_c=e.target.value; render(); });
+  wrap.querySelector("#rExportAll").addEventListener("click",function(){ copyJSON(specJSON(),"Full build spec"); });
+
+  /* thresholds */
+  var tc=elh('<div class="card"><div class="card-head"><div><h2>Thresholds</h2><p>The cut-offs the whole platform keys off</p></div><button class="btn sm" id="cpThr" type="button">Copy (JSON)</button></div><div class="card-body"></div></div>');
+  tc.querySelector("#cpThr").addEventListener("click",function(){ copyJSON(specJSON().thresholds,"Thresholds"); });
+  [["atRisk","At-risk churn score","A customer at or above this counts as at-risk everywhere",1],
+   ["autoMerge","Auto-merge confidence","Matches at or above this can be released in bulk without review",0.01],
+   ["wellReconciled","“Well-reconciled” minimum sources","Present in at least this many source systems",1],
+   ["bandMedium","Score band — Medium from","Scores at or above this read Medium",1],
+   ["bandHigh","Score band — High from","Scores at or above this read High",1]
+  ].forEach(function(r){
+    var row=elh('<div class="field-row"><div class="fr-main"><div class="fr-l">'+r[1]+'</div><div class="fr-n">'+r[2]+'</div></div></div>');
+    row.appendChild(wstepEl(cfg.thresholds[r[0]], r[3], function(v){
+      STORE.update(function(st){ st.config.thresholds[r[0]]=v; });
+      toast("Threshold updated — every screen recalculated");
+    }));
+    tc.querySelector(".card-body").appendChild(row);
+  });
+  wrap.appendChild(tc);
+
+  /* per-score plug-and-play cards */
+  ["churn","engagement","upsell"].forEach(function(key){
+    var meta=SCOREMETA[key], sc=cfg.scores[key], res=evalScore(sample,key);
+    var recs=recommendedFields(key);
+    var lowCov=(sc.fields||[]).filter(function(f){ return fieldCoverageWarn(f.key); });
+
+    var card=elh('<div class="card"><div class="card-head"><div><h2>'+meta.title+' score</h2><p>0–100 &middot; '+meta.tail+'</p></div>'+
+      '<div class="btn-row" style="align-items:center">'+meta.pill(res.value)+'<button class="btn sm" data-cp="'+key+'" type="button">Copy rule (JSON)</button></div></div>'+
+      '<div class="card-body" style="display:flex;flex-direction:column;gap:12px">'+
+        '<div data-recs></div>'+
+        '<div class="grid g2" style="gap:0;border:1px solid var(--border);border-radius:9px;overflow:hidden">'+
+          '<div style="padding:14px;border-right:1px solid var(--border)"><div class="hrow" style="margin-bottom:4px"><span class="eyebrow">Active fields ('+(sc.fields||[]).length+')</span><button class="btn sm" data-add type="button">+ Add field</button></div><div data-fields></div>'+
+            '<div class="formula" style="margin-top:12px" data-formula></div></div>'+
+          '<div style="padding:14px"><div class="eyebrow" style="margin-bottom:6px">'+esc(sample.name)+' &mdash; breakdown</div><div class="bd" data-bd></div></div>'+
+        '</div>'+
+      '</div></div>');
+
+    card.querySelector("[data-cp]").addEventListener("click",function(){
+      copyJSON(specJSON().scores[{churn:"churn_risk",engagement:"engagement",upsell:"upsell_propensity"}[key]], meta.title+" rule");
+    });
+    card.querySelector("[data-add]").addEventListener("click",function(){ fieldPickerModal(key); });
+
+    /* recommendations + coverage warnings */
+    var rd=card.querySelector("[data-recs]");
+    if(recs.length){
+      var strip=elh('<div><div class="mini" style="margin-bottom:6px">The app recommends these known signals for '+meta.title.toLowerCase()+' — tap to plug one in:</div><div class="recstrip"></div></div>');
+      recs.forEach(function(f){
+        var chip=elh('<button class="recchip" type="button">+ '+esc(f.label)+' <span class="rp">'+(f.suggest[key]>0?'+':'')+f.suggest[key]+' · '+f.coverage+'%</span></button>');
+        chip.addEventListener("click",function(){
+          STORE.update(function(st){ st.config.scores[key].fields.push({key:f.key, weight:f.suggest[key]}); });
+          toast(f.label+" added — scores recalculated");
+        });
+        strip.querySelector(".recstrip").appendChild(chip);
+      });
+      rd.appendChild(strip);
+    }
+    if(lowCov.length){
+      rd.appendChild(elh('<div class="warnnote" style="margin-top:'+(recs.length?'8px':'0')+'">⚠ '+lowCov.map(function(f){return esc(FIELD[f.key].label)+' ('+FIELD[f.key].coverage+'%)';}).join(", ")+
+        ' — low data coverage. The score will be unreliable for customers missing this field. Consider removing it or lowering its weight.</div>'));
+    }
+
+    /* active field rows */
+    var fh=card.querySelector("[data-fields]");
+    if(!(sc.fields||[]).length) fh.appendChild(elh('<div class="empty" style="padding:16px">No fields — this score is just the base rate. Add one above.</div>'));
+    (sc.fields||[]).forEach(function(f,idx){
+      var d=FIELD[f.key]; if(!d) return;
+      var row=elh('<div class="field-row"><div class="fr-main"><div class="fr-l">'+esc(d.label)+'</div><div class="fr-n">'+esc(d.note)+'</div>'+
+        '<div class="fr-meta"><span class="pill mut" style="font-size:9px">'+esc(d.source)+'</span><span class="cov"><i style="width:'+d.coverage+'%;background:'+(d.coverage<55?'var(--warn-dot)':'var(--info-dot)')+'"></i></span><span class="cov-t">'+d.coverage+'%</span></div></div>'+
+        '<span class="wu">'+esc(d.unit)+'</span></div>');
+      row.querySelector(".fr-main").after(wstepEl(f.weight, d.unit.indexOf("/")===0?0.5:1, function(v){
+        STORE.update(function(st){ st.config.scores[key].fields[idx].weight=v; });
+        toast("Weight updated — scores recalculated");
+      }));
+      var x=elh('<button class="xbtn" type="button" title="Remove field">&times;</button>');
+      x.addEventListener("click",function(){
+        STORE.update(function(st){ st.config.scores[key].fields.splice(idx,1); });
+        toast(d.label+" removed from "+meta.title);
+      });
+      row.appendChild(x);
+      fh.appendChild(row);
+    });
+    card.querySelector("[data-formula]").innerHTML=scoreFormula(key);
+
+    /* breakdown */
+    var bd=card.querySelector("[data-bd]");
+    res.parts.forEach(function(p){ bd.appendChild(elh('<div class="bdr"><span>'+esc(p.l)+'</span><span class="bda">'+(p.a>=0?"+":"")+p.a+'</span></div>')); });
+    bd.appendChild(elh('<div class="bdr"><span>Raw total</span><span class="bda">'+res.raw+'</span></div>'));
+    bd.appendChild(elh('<div class="bdr tot"><span>'+meta.title+' (clamped 0–100)</span><span class="bda">'+res.value+'</span></div>'));
+
+    wrap.appendChild(card);
+  });
+
+  /* data quality */
+  var dqc=elh('<div class="card"><div class="card-head"><div><h2>Data quality score</h2><p>Per customer, averaged for a book &middot; book average now <b>'+computeDQ(s.customers)+'%</b></p></div><button class="btn sm" id="cpDq" type="button">Copy rule (JSON)</button></div><div class="card-body"></div></div>');
+  dqc.querySelector("#cpDq").addEventListener("click",function(){ copyJSON(specJSON().scores.data_quality,"Data quality rule"); });
+  [["base","Base rate per record","Value for a customer present in one source system",1],
+   ["perSource","Per source system reconciled","Added for each system merged into the profile",1]
+  ].forEach(function(r){
+    var row=elh('<div class="field-row"><div class="fr-main"><div class="fr-l">'+r[1]+'</div><div class="fr-n">'+r[2]+'</div></div></div>');
+    row.appendChild(wstepEl(cfg.dq[r[0]], r[3], function(v){ STORE.update(function(st){ st.config.dq[r[0]]=v; }); toast("Recalculated"); }));
+    dqc.querySelector(".card-body").appendChild(row);
+  });
+  dqc.querySelector(".card-body").appendChild(elh('<div class="formula" style="margin-top:12px">score = clamp( avg over customers( '+cfg.dq.base+' + reconciled_sources &times; '+cfg.dq.perSource+' ), 0, 100 )</div>'));
+  wrap.appendChild(dqc);
+
+  /* match confidence */
+  var mc=cfg.match, mcMax=Math.min(0.99, mc.base+mc.name+mc.phone+mc.email+mc.taxId);
+  var mcc=elh('<div class="card"><div class="card-head"><div><h2>Match confidence</h2><p>How the 0.xx on the identity queue is composed &middot; capped at 0.99</p></div><button class="btn sm" id="cpMc" type="button">Copy rule (JSON)</button></div><div class="card-body"></div></div>');
+  mcc.querySelector("#cpMc").addEventListener("click",function(){ copyJSON(specJSON().scores.match_confidence,"Match confidence rule"); });
+  [["base","Base score","Confidence before any signal matches"],["name","Name matches (fuzzy)","Added when the names match"],
+   ["phone","Phone matches exactly","Added when phone numbers match"],["email","Email matches","Added when emails match"],
+   ["taxId","Tax-ID matches","The strongest signal — added when the registered tax ID matches"]
+  ].forEach(function(r){
+    var row=elh('<div class="field-row"><div class="fr-main"><div class="fr-l">'+r[1]+'</div><div class="fr-n">'+r[2]+'</div></div></div>');
+    row.appendChild(wstepEl(mc[r[0]], 0.01, function(v){ STORE.update(function(st){ st.config.match[r[0]]=v; }); toast("Recalculated"); }));
+    mcc.querySelector(".card-body").appendChild(row);
+  });
+  mcc.querySelector(".card-body").appendChild(elh('<div class="formula" style="margin-top:12px">confidence = min( '+mc.base+' + (name?'+mc.name+':0) + (phone?'+mc.phone+':0) + (email?'+mc.email+':0) + (tax_id?'+mc.taxId+':0), 0.99 )<br>all signals matched &rarr; '+mcMax.toFixed(2)+'</div>'));
+  wrap.appendChild(mcc);
+
+  wrap.appendChild(elh('<div class="warnnote">Nothing here is code — it is configuration. Whatever you set, every screen recalculates the same way engineering’s build should. <b>Export full build spec</b> hands them the formulas, the active fields, the weights and each input’s definition and coverage.</div>'));
+  return wrap;
+};
+
+/* ======================================================= feedback */
+function feedbackModal(){
+  var screen=NAV.find(function(n){return n.id===active;}).title;
+  var rating=0;
+  modal({title:"Share feedback", submitLabel:"Send feedback",
+    body:'<label class="field"><span>Which screen?</span><input id="fbScreen" type="text" value="'+esc(screen)+'"></label>'+
+      '<div class="field"><span>How’s this working for you?</span><div class="stars" id="fbStars">'+[1,2,3,4,5].map(function(i){return '<button type="button" data-v="'+i+'">☆</button>';}).join("")+'</div></div>'+
+      '<label class="field"><span>What’s on your mind?</span><textarea id="fbText" placeholder="What worked, what didn’t, what’s missing, what’s confusing…"></textarea></label>'+
+      '<label class="field"><span>Your name (optional)</span><input id="fbName" type="text" placeholder=""></label>',
+    onOpen:function(ov){
+      ov.querySelectorAll("#fbStars button").forEach(function(b){
+        b.addEventListener("click",function(){ rating=+b.dataset.v;
+          ov.querySelectorAll("#fbStars button").forEach(function(x){ var on=+x.dataset.v<=rating; x.textContent=on?"★":"☆"; x.classList.toggle("on",on); });
+        });
+      });
+    },
+    onSubmit:function(ov){
+      var text=ov.querySelector("#fbText").value.trim();
+      if(!text && !rating) return false;
+      STORE.update(function(st){
+        st.feedback.push({at:Date.now(),screen:ov.querySelector("#fbScreen").value.trim()||screen,rating:rating||3,text:text,author:ov.querySelector("#fbName").value.trim()});
+        STORE.log("feedback","Feedback left on "+screen);
+      });
+      toast("Thanks — noted");
+    }});
+}
+
+/* ======================================================= theme */
+(function theme(){
+  var root=document.documentElement, btn=$("#themeToggle");
+  var saved=STORE.get().ui.theme;
+  if(saved==="light"||saved==="dark") root.setAttribute("data-theme",saved);
+  function cur(){ return root.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }
+  function paint(){ btn.innerHTML = cur()==="dark" ? "☾ Dark" : "☀ Light"; }
+  btn.addEventListener("click",function(){
+    var n = cur()==="dark" ? "light" : "dark";
+    root.setAttribute("data-theme",n);
+    STORE.update(function(st){ st.ui.theme=n; });
+    paint();
+  });
+  try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",paint); }catch(e){}
+  paint();
+})();
+
+/* ======================================================= boot */
+buildNav();
+STORE.subscribe(function(){ render(); });
+$("#fab").addEventListener("click",feedbackModal);
+$("#resetBtn").addEventListener("click",function(){
+  modal({title:"Reset demo data?", submitLabel:"Reset everything", cancelLabel:"Keep my data",
+    body:'<div class="note">This clears every match decision, note, ticket, audience and piece of feedback saved in this browser, and reloads the seeded sample. Useful before handing the prototype to the next tester.</div>',
+    onSubmit:function(){ STORE.reset(); go("home"); toast("Demo data reset"); }});
+});
+go(STORE.get().ui.lastView || "home");
+</script>
+</body>
+</html>
