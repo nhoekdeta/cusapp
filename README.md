@@ -53,4 +53,17 @@ page falls back to the system UI font and still works.
 
 Light/dark follows the OS; the ☀/☾ button overrides it. Cellcard brand palette
 (Primary `#FF9F18` / deep `#F56300`, Pearl White `#FBF8F4`, Ultramarine
-`#0D90CE`). No data is sent anywhere — all sample data, all saved locally.
+`#0D90CE`, Pink `#DF1683`). No data is sent anywhere — all sample data, all
+saved locally. All figures are in USD.
+
+## First run & tooltips
+
+- **First visit opens a short "what this is for" panel** — take the guided tour or
+  explore on your own; picking "explore" points an arrow at **How it works** so a
+  new viewer knows where to start. It reappears after *Reset demo data* for the
+  next tester.
+- **Hover for an explanation.** Recurring controls carry tooltips — the score
+  weight steppers, the confidence steppers, coverage bars, recommendation chips,
+  the "Only here" tags, the range switch, the theme and reset buttons.
+- The **− / +** on every stepper is colour-coded: ultramarine **−** lowers a
+  value, pink **+** raises it.

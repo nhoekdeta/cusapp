@@ -260,6 +260,8 @@
   .seg button[data-on="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm);}
   .stepper{display:inline-flex;gap:4px;}
   .stepper button{width:22px;height:22px;line-height:1;padding:0;font-size:13px;border-radius:6px;}
+  .stepper button[data-step="-1"],.wstep button[data-d="-1"]{color:var(--info-dot);font-weight:700;}
+  .stepper button[data-step="1"],.wstep button[data-d="1"]{color:var(--pop);font-weight:700;}
   .checkcell{width:34px;text-align:center;}
 
   /* feed */
@@ -325,6 +327,18 @@
   .lane-label .ll-s{font-size:10.5px;color:var(--ink-2);margin-top:2px;}
   @media (max-width:720px){ .lane{flex-direction:column;} .lane-label{width:auto;padding-top:0;} }
 
+  /* first-visit nav callout */
+  .navtip{position:absolute;z-index:120;max-width:236px;background:var(--pop);color:#fff;font-size:12px;line-height:1.45;
+    padding:10px 30px 10px 13px;border-radius:9px;box-shadow:0 10px 30px rgba(0,0,0,.22);animation:navtip-in .26s ease both;}
+  .navtip-arrow{position:absolute;left:-6px;top:14px;width:12px;height:12px;background:var(--pop);transform:rotate(45deg);}
+  .navtip-x{position:absolute;top:3px;right:6px;background:none;border:0;color:#fff;font-size:16px;line-height:1;cursor:pointer;opacity:.75;}
+  .navtip-x:hover{opacity:1;}
+  @keyframes navtip-in{from{opacity:0;transform:translateX(-7px);}to{opacity:1;transform:translateX(0);}}
+  .welcome .lead{font-size:13.5px;color:var(--ink);margin:0 0 10px;line-height:1.5;}
+  .welcome p{margin:0 0 10px;color:var(--ink-2);font-size:12.5px;line-height:1.55;}
+  .welcome-steps{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:7px;}
+  .welcome-steps li{font-size:12px;color:var(--ink-2);line-height:1.5;}
+
   /* tour */
   .tour-target{outline:2px solid var(--accent)!important;outline-offset:3px;border-radius:8px;
     animation:tourpulse 1.5s ease-in-out infinite;}
@@ -352,7 +366,9 @@
   .cov-t{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.03em;}
   .wstep{display:inline-flex;align-items:stretch;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--surface);flex:none;}
   .wstep button{width:28px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;font-size:15px;line-height:1;padding:0;}
-  .wstep button:hover{background:var(--surface-3);color:var(--ink);}
+  .wstep button:hover{background:var(--surface-3);}
+  .wstep button[data-d="-1"]:hover{background:var(--info-bg);}
+  .wstep button[data-d="1"]:hover{background:var(--pop-soft);}
   .wstep input{width:52px;border:0;text-align:center;font-family:var(--mono);font-size:12.5px;background:transparent;color:var(--ink);
     -moz-appearance:textfield;appearance:textfield;padding:6px 0;}
   .wstep input::-webkit-outer-spin-button,.wstep input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
@@ -395,7 +411,7 @@
     <nav class="side-nav" id="sideNav" role="tablist" aria-label="Sections"></nav>
     <div class="side-foot">
       Prototype &middot; sample data, saved in this browser.<br>
-      <button id="resetBtn" type="button">Reset demo data</button>
+      <button id="resetBtn" type="button" title="Clear every merge, note, ticket, audience and piece of feedback saved in this browser and reload the seeded sample — do this before handing the prototype to the next tester.">Reset demo data</button>
     </div>
   </aside>
 
@@ -406,7 +422,7 @@
         <div class="persona" id="tbPersona">&mdash;</div>
       </div>
       <div class="right">
-        <button class="btn sm" id="themeToggle" type="button" aria-label="Toggle colour theme">&#9788; Light</button>
+        <button class="btn sm" id="themeToggle" type="button" aria-label="Toggle colour theme" title="Switch between light and dark. Follows your OS until you click.">&#9788; Light</button>
       </div>
       <nav class="mobilenav" id="mobileNav" role="tablist" aria-label="Sections (mobile)"></nav>
     </header>
@@ -414,7 +430,7 @@
   </div>
 </div>
 
-<button class="fab" id="fab" type="button">
+<button class="fab" id="fab" type="button" title="Rate the screen you're on and leave a note. Everything collected shows on Home.">
   <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
   Feedback
 </button>
@@ -499,7 +515,7 @@ function scoreInputs(c, forScore){
     renewalDays: c.sig?c.sig.renewalDays:120,
     usage: c.sig?c.sig.usageRatio:1,
     atTop: c.sig?c.sig.atTopTier:false,
-    arpuLow: /₭\s*(1[0-9]|2[0-4])k\b/.test(c.arpu),
+    arpuLow: /^\$\s*[0-4](\.\d+)?$/.test(c.arpu),
     npsDetractor: c.sig?!!c.sig.npsDetractor:false,
     billShock: c.sig?!!c.sig.billShock:false,
     roamed: c.sig?!!c.sig.roamed:false,
@@ -573,20 +589,20 @@ function seed(){
     };
   }
   var cs=[
-    C("MST-4471","Sok Dara","Consumer postpaid",["CRM","Billing","Network","Support","Digital"],38,61,72,"₭ 92k","4y 3m","Postpaid Unlimited 25","granted"),
-    C("MST-9982","Chan Sophea","Consumer postpaid",["CRM","Billing","Support"],71,22,34,"₭ 68k","2y 1m","Home Fibre 200","withdrawn"),
-    C("MST-6120","Lim Chanthou","Consumer prepaid",["CRM","Network","Digital"],64,40,44,"₭ 24k","11m","Prepaid Smart 5","granted"),
-    C("MST-7733","Nou Kimhak","Consumer postpaid",["CRM","Billing","Network","Digital"],12,55,80,"₭ 140k","7y 8m","Postpaid Unlimited 40","granted"),
-    C("MST-8041","Sovann Reaksmey","Loyalty",["CRM","Digital","Support"],55,33,58,"₭ 41k","1y 5m","Loyalty tier · Gold","granted"),
-    C("ACC-901234567","Angkor Freight & Logistics","B2B",["CRM","Billing","Network"],22,74,66,"₭ 13.1M","6y 4m","Enterprise Fibre · 3 sites","b2b","K001-901234567"),
-    C("MST-5510","Keo Vibol","Consumer prepaid",["CRM","Network"],48,29,37,"₭ 19k","3y 2m","Prepaid Smart 3","granted"),
-    C("MST-3374","Ros Chanmony","Consumer postpaid",["CRM","Billing","Support","Digital"],67,44,41,"₭ 77k","1y 9m","Postpaid Unlimited 25","granted"),
-    C("MST-2280","Chea Sokha","Consumer postpaid",["CRM","Billing","Network","Digital"],29,51,63,"₭ 84k","5y 1m","Postpaid Unlimited 25","granted"),
-    C("MST-7742","Meng Sreyneang","Consumer prepaid",["CRM","Digital"],58,26,48,"₭ 16k","8m","Prepaid Smart 3","granted"),
-    C("MST-6651","Hout Piseth","Consumer postpaid",["CRM","Billing","Network","Support","Digital"],41,38,55,"₭ 61k","2y 10m","Home Fibre 100","granted"),
-    C("ACC-770180022","Mekong Retail Group","B2B",["CRM","Billing"],18,69,72,"₭ 6.4M","4y 7m","Enterprise Mobile · 90 lines","b2b","K001-770180022"),
-    C("MST-9014","Tep Bopha","Loyalty",["CRM","Digital"],63,31,40,"₭ 33k","1y 1m","Loyalty tier · Silver","withdrawn"),
-    C("MST-4419","Yem Dara","Consumer postpaid",["CRM","Billing","Network"],34,47,58,"₭ 72k","3y 6m","Postpaid Unlimited 25","granted")
+    C("MST-4471","Sok Dara","Consumer postpaid",["CRM","Billing","Network","Support","Digital"],38,61,72,"$14.00","4y 3m","Postpaid Unlimited 25","granted"),
+    C("MST-9982","Chan Sophea","Consumer postpaid",["CRM","Billing","Support"],71,22,34,"$22.00","2y 1m","Home Fibre 200","withdrawn"),
+    C("MST-6120","Lim Chanthou","Consumer prepaid",["CRM","Network","Digital"],64,40,44,"$4.20","11m","Prepaid Smart 5","granted"),
+    C("MST-7733","Nou Kimhak","Consumer postpaid",["CRM","Billing","Network","Digital"],12,55,80,"$28.00","7y 8m","Postpaid Unlimited 40","granted"),
+    C("MST-8041","Sovann Reaksmey","Loyalty",["CRM","Digital","Support"],55,33,58,"$11.00","1y 5m","Loyalty tier · Gold","granted"),
+    C("ACC-901234567","Angkor Freight & Logistics","B2B",["CRM","Billing","Network"],22,74,66,"$1,950","6y 4m","Enterprise Fibre · 3 sites","b2b","K001-901234567"),
+    C("MST-5510","Keo Vibol","Consumer prepaid",["CRM","Network"],48,29,37,"$3.10","3y 2m","Prepaid Smart 3","granted"),
+    C("MST-3374","Ros Chanmony","Consumer postpaid",["CRM","Billing","Support","Digital"],67,44,41,"$15.00","1y 9m","Postpaid Unlimited 25","granted"),
+    C("MST-2280","Chea Sokha","Consumer postpaid",["CRM","Billing","Network","Digital"],29,51,63,"$16.00","5y 1m","Postpaid Unlimited 25","granted"),
+    C("MST-7742","Meng Sreyneang","Consumer prepaid",["CRM","Digital"],58,26,48,"$2.90","8m","Prepaid Smart 3","granted"),
+    C("MST-6651","Hout Piseth","Consumer postpaid",["CRM","Billing","Network","Support","Digital"],41,38,55,"$17.00","2y 10m","Home Fibre 100","granted"),
+    C("ACC-770180022","Mekong Retail Group","B2B",["CRM","Billing"],18,69,72,"$980","4y 7m","Enterprise Mobile · 90 lines","b2b","K001-770180022"),
+    C("MST-9014","Tep Bopha","Loyalty",["CRM","Digital"],63,31,40,"$7.50","1y 1m","Loyalty tier · Silver","withdrawn"),
+    C("MST-4419","Yem Dara","Consumer postpaid",["CRM","Billing","Network"],34,47,58,"$14.00","3y 6m","Postpaid Unlimited 25","granted")
   ];
   var byId={}; cs.forEach(function(c){ byId[c.id]=c; });
 
@@ -595,7 +611,7 @@ function seed(){
   tl("MST-4471",[
     {at:hoursAgo(20),src:"Digital",ev:"Opened app — viewed data-usage screen"},
     {at:hoursAgo(40),src:"Support",ev:"Ticket T-88213 raised — slow data around Toul Kork"},
-    {at:hoursAgo(96),src:"Billing",ev:"Payment received — ₭ 92,000 via ABA autopay"},
+    {at:hoursAgo(96),src:"Billing",ev:"Payment received — $14.00 via ABA autopay"},
     {at:hoursAgo(190),src:"Network",ev:"Usage 80% threshold notification sent"}
   ]);
   tl("MST-9982",[
@@ -605,7 +621,7 @@ function seed(){
   ]);
   tl("MST-6120",[
     {at:hoursAgo(50),src:"Network",ev:"Roaming session — Thailand, 1.2 GB"},
-    {at:hoursAgo(150),src:"Digital",ev:"Top-up ₭ 10,000 in app"}
+    {at:hoursAgo(150),src:"Digital",ev:"Top-up $2.50 in app"}
   ]);
   tl("MST-7733",[
     {at:hoursAgo(6),src:"Digital",ev:"Opened app — checked bill"},
@@ -623,11 +639,11 @@ function seed(){
     {at:hoursAgo(22),src:"Support",ev:"Ticket T-88251 raised — billing dispute"},
     {at:hoursAgo(180),src:"Digital",ev:"Push opened — weekend data boost"}
   ]);
-  tl("MST-2280",[ {at:hoursAgo(48),src:"Network",ev:"5G enabled on device"}, {at:hoursAgo(240),src:"Billing",ev:"Payment received — ₭ 84,000"} ]);
+  tl("MST-2280",[ {at:hoursAgo(48),src:"Network",ev:"5G enabled on device"}, {at:hoursAgo(240),src:"Billing",ev:"Payment received — $16.00"} ]);
   tl("MST-7742",[ {at:hoursAgo(70),src:"Digital",ev:"Installed app, completed onboarding"} ]);
   tl("MST-6651",[ {at:hoursAgo(18),src:"Support",ev:"Ticket T-88248 raised — router replacement"}, {at:hoursAgo(160),src:"Network",ev:"Line test passed"} ]);
   tl("MST-9014",[ {at:hoursAgo(36),src:"Digital",ev:"Loyalty tier review — held at Silver"} ]);
-  tl("MST-4419",[ {at:hoursAgo(90),src:"Billing",ev:"Payment received — ₭ 72,000"} ]);
+  tl("MST-4419",[ {at:hoursAgo(90),src:"Billing",ev:"Payment received — $14.00"} ]);
 
   // seed tickets
   byId["MST-4471"].tickets=[{id:"T-88213",subject:"Slow data around Toul Kork in evenings",status:"Open",opened:hoursAgo(40)}];
@@ -682,7 +698,7 @@ function seed(){
   ];
 
   return {
-    v:8,
+    v:9,
     createdAt:Date.now(),
     customers:cs, matches:matches, b2b:b2b, audiences:audiences,
     config:{
@@ -707,7 +723,7 @@ function seed(){
       {at:hoursAgo(48),kind:"offer",text:"Win-back offer sent to Ros Chanmony",cust:"MST-3374"}
     ],
     feedback:[],
-    ui:{ theme:"system", lastCustomerId:"MST-4471", lastView:"home", opCustomerId:"MST-4471", syncAudienceId:"AUD-01" }
+    ui:{ theme:"system", lastCustomerId:"MST-4471", lastView:"home", opCustomerId:"MST-4471", syncAudienceId:"AUD-01", seenWelcome:false }
   };
 }
 
@@ -716,7 +732,7 @@ var STORE=(function(){
   var KEY="c360proto";
   var subs=[]; var state;
   function load(){
-    try{ var s=JSON.parse(localStorage.getItem(KEY)); if(s && s.v===8) return s; }catch(e){}
+    try{ var s=JSON.parse(localStorage.getItem(KEY)); if(s && s.v===9) return s; }catch(e){}
     return seed();
   }
   function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
@@ -749,11 +765,12 @@ function modal(opts){
       (opts.submitLabel?'<button class="btn primary" data-x="ok" type="button">'+esc(opts.submitLabel)+'</button>':'')+
     '</div></div></div>');
   host.appendChild(ov);
-  function close(){ ov.remove(); }
+  var settled=false;
+  function close(viaSubmit){ ov.remove(); if(!viaSubmit && !settled && opts.onCancel) opts.onCancel(); settled=true; }
   ov.addEventListener("click",function(e){ if(e.target===ov) close(); });
-  ov.querySelector('[data-x="cancel"]').addEventListener("click",close);
+  ov.querySelector('[data-x="cancel"]').addEventListener("click",function(){ close(); });
   var ok=ov.querySelector('[data-x="ok"]');
-  if(ok) ok.addEventListener("click",function(){ if(opts.onSubmit && opts.onSubmit(ov)===false) return; close(); });
+  if(ok) ok.addEventListener("click",function(){ if(opts.onSubmit && opts.onSubmit(ov)===false) return; settled=true; close(true); });
   document.addEventListener("keydown",function esc2(e){ if(e.key==="Escape"){ close(); document.removeEventListener("keydown",esc2); } });
   if(opts.onOpen) opts.onOpen(ov);
   var f=ov.querySelector("input,textarea,select"); if(f) f.focus();
@@ -853,6 +870,21 @@ function render(){
   });
   renderTourDock();
   applyTourHighlight();
+  titleize();
+}
+
+/* ---- tooltips: attach explanatory title= to recurring chrome after each render */
+function titleize(){
+  function T(sel,txt){ document.querySelectorAll(sel).forEach(function(el){ if(!el.getAttribute("title")) el.setAttribute("title",txt); }); }
+  T(".adv-tag","A capability CRM and CVM tools don't have on their own — unique to this platform.");
+  T('.nav-btn[data-id="identity"] .navbadge',"Candidate record matches still waiting for review in Identity resolution.");
+  T(".wstep","Set the weight. The blue − lowers it, the pink + raises it — every score on every screen recalculates as you change it.");
+  T(".stepper","Nudge the match-confidence score up or down before you Confirm, Review or Reject.");
+  T(".cov","Data coverage — the share of customers who have this field populated from its source system.");
+  T(".cov-t","Data coverage — the share of customers who have this field populated from its source system.");
+  T(".recchip","A signal the platform recommends for this score. Click to add it with the suggested weight.");
+  T(".scoreact","Click to jump to the next action this score suggests for the customer.");
+  T("#rangeSeg button","Switch the usage trend between daily (30d), weekly (90d) and monthly (12m) view.");
 }
 
 function buildNav(){
@@ -1727,7 +1759,7 @@ VIEWS.flow=function(){
   ];
   var ic=elh('<div class="card"><div class="card-head"><div><h2>The impact</h2><p>The business case, in the numbers management cares about</p></div><span class="adv-tag">Buy-in</span></div>'+
     '<div class="twrap"><table class="tbl"><thead><tr><th>Outcome</th><th>Where teams are today</th><th>Target with the platform</th><th>What gets us there</th></tr></thead><tbody></tbody></table></div>'+
-    '<div class="foot-row"><span class="note" style="max-width:70ch">On a 1.4M postpaid base, shaving monthly churn by 0.4 pp keeps roughly <b>5,600 customers a month</b> &mdash; at ~₭ 90k ARPU the platform pays for itself many times over. Figures here are illustrative &mdash; drop in DCT’s own baselines to build the case.</span></div></div>');
+    '<div class="foot-row"><span class="note" style="max-width:70ch">On a 1.4M postpaid base, shaving monthly churn by 0.4 pp keeps roughly <b>5,600 customers a month</b> &mdash; at ~$14 monthly ARPU the platform pays for itself many times over. Figures here are illustrative &mdash; drop in DCT’s own baselines to build the case.</span></div></div>');
   IMPACT.forEach(function(r){
     ic.querySelector("tbody").appendChild(elh('<tr><td style="font-weight:500">'+esc(r[0])+'</td>'+
       '<td class="muted">'+esc(r[1])+'</td><td><b style="color:var(--accent-text)">'+esc(r[2])+'</b></td>'+
@@ -2119,6 +2151,55 @@ function feedbackModal(){
   paint();
 })();
 
+/* ======================================================= first-visit guide */
+function navTip(navId, text){
+  document.querySelectorAll(".navtip").forEach(function(n){ n.remove(); });
+  var btn=document.querySelector('.side-nav .nav-btn[data-id="'+navId+'"]')
+       || document.querySelector('.nav-btn[data-id="'+navId+'"]');
+  if(!btn) return;
+  btn.classList.add("tour-target");
+  var tip=elh('<div class="navtip"><span class="navtip-arrow"></span><span class="navtip-t"></span>'+
+    '<button type="button" class="navtip-x" aria-label="dismiss">&times;</button></div>');
+  tip.querySelector(".navtip-t").textContent=text;
+  document.body.appendChild(tip);
+  var r=btn.getBoundingClientRect(), narrow=window.innerWidth<960;
+  if(narrow){
+    tip.style.left=(window.scrollX + Math.max(12, r.left))+"px";
+    tip.style.top=(window.scrollY + r.bottom + 12)+"px";
+    tip.querySelector(".navtip-arrow").style.cssText="left:18px;top:-6px;";
+  } else {
+    tip.style.left=(window.scrollX + r.right + 14)+"px";
+    tip.style.top=(window.scrollY + r.top + Math.max(0,(r.height-38)/2))+"px";
+  }
+  var t;
+  function kill(){ if(tip.parentNode) tip.remove(); btn.classList.remove("tour-target"); clearTimeout(t); }
+  tip.querySelector(".navtip-x").addEventListener("click",kill);
+  btn.addEventListener("click",kill,{once:true});
+  t=setTimeout(kill,9000);
+}
+function welcomeGuide(){
+  modal({
+    title:"What this prototype is for",
+    body:'<div class="welcome">'+
+      '<p class="lead">Right now one DCT customer is scattered across Siebel, Kenan billing, the network, Freshdesk and the app — with no single view of them.</p>'+
+      '<p>This platform <b>resolves those records into one identity</b>, scores every customer for churn, upsell and engagement using rules <b>the business owns</b>, and pushes ready-made audiences straight to the campaign tool — no data-team ticket.</p>'+
+      '<ul class="welcome-steps">'+
+        '<li><b>How it works</b> — the end goal, the business case and the end-to-end flow. Start here for the management pitch.</li>'+
+        '<li><b>Identity resolution → Customer 360</b> — watch scattered records merge into one profile.</li>'+
+        '<li><b>Rules &amp; scoring</b> — plug signals in and out of each score; every screen updates live.</li>'+
+      '</ul></div>',
+    submitLabel:"Take the guided tour", cancelLabel:"Explore on my own",
+    onSubmit:function(){
+      STORE.update(function(st){ st.ui.seenWelcome=true; });
+      setTimeout(function(){ startTour("identity"); },140);
+    },
+    onCancel:function(){
+      STORE.update(function(st){ st.ui.seenWelcome=true; });
+      setTimeout(function(){ navTip("flow","Start here — the goal, the impact and the end-to-end flow."); },60);
+    }
+  });
+}
+
 /* ======================================================= boot */
 buildNav();
 STORE.subscribe(function(){ render(); });
@@ -2129,6 +2210,7 @@ $("#resetBtn").addEventListener("click",function(){
     onSubmit:function(){ STORE.reset(); go("home"); toast("Demo data reset"); }});
 });
 go(STORE.get().ui.lastView || "home");
+if(!STORE.get().ui.seenWelcome){ setTimeout(welcomeGuide, 400); }
 </script>
 </body>
 </html>
