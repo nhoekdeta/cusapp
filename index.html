@@ -1113,6 +1113,14 @@ function go(id,opt){
   if(!opt.keepScroll) window.scrollTo(0,0);
 }
 function openCustomer(cid){ STORE.quiet(function(s){ s.ui.lastCustomerId=cid; }); go("c360"); }
+/* re-render in place without losing the side list's scroll position or the page scroll */
+function keepListScroll(listId, fn){
+  var el=document.getElementById(listId);
+  var top=el?el.scrollTop:0, wy=window.pageYOffset;
+  fn();
+  var n=document.getElementById(listId); if(n) n.scrollTop=top;
+  window.scrollTo(0,wy);
+}
 
 function render(){
   recompute();
@@ -1443,7 +1451,7 @@ VIEWS.c360=function(){
     var host=side.querySelector("#dirList"); host.innerHTML="";
     if(!list.length){ host.appendChild(elh('<div class="empty">No match.</div>')); return; }
     list.forEach(function(c){
-      host.appendChild(custRow(c,function(){ STORE.quiet(function(st){ st.ui.lastCustomerId=c.id; }); render(); }, c.id===s.ui.lastCustomerId));
+      host.appendChild(custRow(c,function(){ keepListScroll("dirList",function(){ STORE.quiet(function(st){ st.ui.lastCustomerId=c.id; }); render(); }); }, c.id===s.ui.lastCustomerId));
     });
   }
   fillDir();
@@ -1621,7 +1629,7 @@ VIEWS.operator=function(){
     if(!list.length){ host.appendChild(elh('<div class="empty">No match.</div>')); return; }
     if(!list.some(function(c){return c.id===s.ui.opCustomerId;})) STORE.quiet(function(st){ st.ui.opCustomerId=list[0].id; });
     list.forEach(function(c){
-      host.appendChild(custRow(c,function(){ STORE.quiet(function(st){st.ui.opCustomerId=c.id;}); render(); }, c.id===STORE.get().ui.opCustomerId));
+      host.appendChild(custRow(c,function(){ keepListScroll("opPick",function(){ STORE.quiet(function(st){st.ui.opCustomerId=c.id;}); render(); }); }, c.id===STORE.get().ui.opCustomerId));
     });
   }
   fillPick();
