@@ -76,5 +76,5 @@ saved locally. All figures are in USD.
 - **Hover for an explanation.** Recurring controls carry tooltips — the score
   weight steppers, the confidence steppers, coverage bars, recommendation chips,
   the "Only here" tags, the range switch, the theme and reset buttons.
-- The **− / +** on every stepper is colour-coded: ultramarine **−** lowers a
-  value, pink **+** raises it.
+- The **− / +** on every stepper is colour-coded: pink **−** lowers a
+  value, ultramarine **+** raises it.

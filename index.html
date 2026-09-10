@@ -272,8 +272,8 @@
   .seg button[data-on="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm);}
   .stepper{display:inline-flex;gap:4px;}
   .stepper button{width:22px;height:22px;line-height:1;padding:0;font-size:13px;border-radius:6px;}
-  .stepper button[data-step="-1"],.wstep button[data-d="-1"]{color:var(--info-dot);font-weight:700;}
-  .stepper button[data-step="1"],.wstep button[data-d="1"]{color:var(--pop);font-weight:700;}
+  .stepper button[data-step="-1"],.wstep button[data-d="-1"]{color:var(--pop);font-weight:700;}
+  .stepper button[data-step="1"],.wstep button[data-d="1"]{color:var(--info-dot);font-weight:700;}
   .checkcell{width:34px;text-align:center;}
 
   /* feed */
@@ -438,8 +438,8 @@
   .wstep{display:inline-flex;align-items:stretch;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--surface);flex:none;}
   .wstep button{width:28px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;font-size:15px;line-height:1;padding:0;}
   .wstep button:hover{background:var(--surface-3);}
-  .wstep button[data-d="-1"]:hover{background:var(--info-bg);}
-  .wstep button[data-d="1"]:hover{background:var(--pop-soft);}
+  .wstep button[data-d="-1"]:hover{background:var(--pop-soft);}
+  .wstep button[data-d="1"]:hover{background:var(--info-bg);}
   .wstep input{width:52px;border:0;text-align:center;font-family:var(--mono);font-size:12.5px;background:transparent;color:var(--ink);
     -moz-appearance:textfield;appearance:textfield;padding:6px 0;}
   .wstep input::-webkit-outer-spin-button,.wstep input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
@@ -1140,7 +1140,7 @@ function titleize(){
   function T(sel,txt){ document.querySelectorAll(sel).forEach(function(el){ if(!el.getAttribute("title")) el.setAttribute("title",txt); }); }
   T(".adv-tag","A capability CRM and CVM tools don't have on their own — unique to this platform.");
   T('.nav-btn[data-id="identity"] .navbadge',"Candidate record matches still waiting for review in Identity resolution.");
-  T(".wstep","Set the weight. The blue − lowers it, the pink + raises it — every score on every screen recalculates as you change it.");
+  T(".wstep","Set the weight. The pink − lowers it, the blue + raises it — every score on every screen recalculates as you change it.");
   T(".stepper","Nudge the match-confidence score up or down before you Confirm, Review or Reject.");
   T(".cov","Data coverage — the share of customers who have this field populated from its source system.");
   T(".cov-t","Data coverage — the share of customers who have this field populated from its source system.");
